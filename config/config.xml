@@ -1,0 +1,24 @@
+<?xml version="1.1" encoding='UTF-8' ?>
+<config>
+	<path>
+		<path-bank>d:\bank1</path-bank>
+		<path-out>c:\tax\txt</path-out>
+	</path>
+	<treasury_files>
+		<file>
+			<treasury>УДКСУ у Криворізькому районі</treasury>
+			<code>097</code>
+			<raj>18</raj>
+		</file>
+		<file>
+			<treasury>УДКСУ у Жовтневому районі</treasury>
+			<code>022</code>
+			<raj>83</raj>
+		</file>
+		<file>
+			<treasury>УДКСУ у Тернівському районі</treasury>
+			<code>025</code>
+			<raj>87</raj>
+		</file>
+	</treasury_files>
+</config>
