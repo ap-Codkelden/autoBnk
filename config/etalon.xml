@@ -1,0 +1,127 @@
+<?xml version="1.1" encoding='UTF-8' ?>
+<table>
+	<row>
+		<code>140100</code>
+		<name>ПДВ</name>
+	</row>
+	<row>
+		<code>110200</code>
+		<name>Податок на прибуток</name>
+	</row>
+	<row>
+		<code>210100</code>
+		<name>Частина чистого прибутку</name>
+	</row>
+	<row>
+		<code>130200</code>
+		<name>Вода</name>
+	</row>
+	<row>
+		<code>190600</code>
+		<name>Виноградарство</name>
+	</row>
+	<row>
+		<code>130300</code>
+		<name>Надра</name>
+	</row>
+	<row>
+		<code>210810</code>
+		<name>Пеня у сферi ЗЕД</name>
+	</row>
+	<row>
+		<code>310100</code>
+		<name>Реалізація безх. майна</name>
+	</row>
+	<row>
+		<code>190700</code>
+		<name>Iнші</name>
+	</row>
+	<row>
+		<code>190100</code>
+		<name>Екологiчний податок</name>
+	</row>
+	<row>
+		<code>140107</code>
+		<name>ПДВ перероб. пiдр-в</name>
+	</row>
+	<row>
+		<code>110100</code>
+		<name>Податок на доходи</name>
+	</row>
+	<row>
+		<code>130102</code>
+		<name>Лiсовi ресурси</name>
+	</row>
+	<row>
+		<code>190401</code>
+		<name>Фiксований сiльськогосп.</name>
+	</row>
+	<row>
+		<code>130501</code>
+		<name>Земля юр. осіб</name>
+	</row>
+	<row>
+		<code>130502</code>
+		<name>Оренда юр. осіб</name>
+	</row>
+	<row>
+		<code>130503</code>
+		<name>Земля фіз. осіб</name>
+	</row>
+	<row>
+		<code>130505</code>
+		<name>Оренда фіз. осіб</name>
+	</row>
+	<row>
+		<code>110202</code>
+		<name>Податок на прибуток</name>
+	</row>
+	<row>
+		<code>180400</code>
+		<name>Патенти</name>
+	</row>
+	<row>
+		<code>130299</code>
+		<name>Вода</name>
+	</row>
+	<row>
+		<code>130399</code>
+		<name>Надра</name>
+	</row>
+	<row>
+		<code>220100</code>
+		<name>Плата за лiцензiї</name>
+	</row>
+	<row>
+		<code>310100</code>
+		<name>Реалізація безх. майна</name>
+	</row>
+	<row>
+		<code>240600</code>
+		<name>Iнші</name>
+	</row>
+	<row>
+		<code>180415</code>
+		<name>Патенти (нафтопрод.)</name>
+	</row>
+	<row>
+		<code>190100</code>
+		<name>Екологiчний податок</name>
+	</row>
+	<row>
+		<code>180501</code>
+		<name>Єдиний з юр. осiб</name>
+	</row>
+	<row>
+		<code>180502</code>
+		<name>Єдиний з фiз. осiб</name>
+	</row>
+	<row>
+		<code>120200</code>
+		<name>Транспорт</name>
+	</row>
+	<row>
+		<code>180100</code>
+		<name>Нерух. майно</name>
+	</row>
+</table>

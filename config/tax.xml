@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <tax>
-	<row code='1401'>
+	<row code='140100'>
 		<query>
 			<rozd></rozd> 
 			<bd>0</bd> 
@@ -9,7 +9,7 @@
 			<coef>1.00</coef> 
 		</query>
 	</row>
-	<row code='1102'>
+	<row code='110200'>
 	<query>
 		<rozd></rozd> 
 		<bd>0</bd> 
@@ -18,7 +18,7 @@
 		<coef>1.00</coef> 
 	</query>
 	</row>
-	<row code='2101'>
+	<row code='210100'>
 	<query>
 		<rozd></rozd>
 		<bd>0</bd>
@@ -27,7 +27,7 @@
 		<coef>1.00</coef>
 	</query>
 	</row>
-	<row code='1302'>
+	<row code='130200'>
 	<query>
 		<rozd>3</rozd>
 		<bd>0</bd>
@@ -36,7 +36,7 @@
 		<coef>0.50</coef>
 	</query>
 	</row>
-	<row code='1303'>
+	<row code='130300'>
 	<query>
 		<rozd>1</rozd>
 		<bd>0</bd>
@@ -45,7 +45,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='2108'>
+<row code='210810'>
 	<query>
 		<rozd></rozd>
 		<bd>0</bd>
@@ -54,7 +54,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='3101'>
+<row code='310100'>
 	<query>
 		<rozd></rozd>
 		<bd>0</bd>
@@ -63,7 +63,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='9999'>
+<row code='190700'>
 	<query>
 		<rozd></rozd>
 		<bd>0</bd>
@@ -93,7 +93,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1906'>
+<row code='190600'>
 	<query>
 		<rozd></rozd>
 		<bd>0</bd>
@@ -102,7 +102,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1901'>
+<row code='190100'>
 	<query>
 		<rozd>3</rozd>
 		<bd>0</bd>
@@ -118,7 +118,7 @@
 		<coef>0.53</coef>
 	</query>
 </row>
-<row code='1499'>
+<row code='140107'>
 	<query>
 		<rozd></rozd>
 		<bd>0</bd>
@@ -128,7 +128,7 @@
 	</query>
 </row>
 <!--  МБ  -->
-	<row code='1101'>
+	<row code='110100'>
 		<query>
 			<rozd>4</rozd> 
 			<bd>1</bd> 
@@ -144,7 +144,7 @@
 			<coef>0.90</coef> 
 		</query>
 	</row>
-	<row code='1301'>
+	<row code='130102'>
 		<query>
 			<rozd>1</rozd> 
 			<bd>1</bd> 
@@ -153,7 +153,7 @@
 			<coef>1.00</coef> 
 		</query>
 	</row>
-<row code='1904'>
+<row code='190401'>
 	<!-- Фіксований сільськогосподарський податок -->
 	<query>
 		<rozd></rozd>
@@ -163,7 +163,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1309'><!-- зю з -->
+<row code='130501'><!-- зю з -->
 	<query>
 		<rozd>4</rozd>
 		<bd>1</bd>
@@ -172,7 +172,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1310'><!--зю ор-->
+<row code='130502'><!--зю ор-->
 	<query>
 		<rozd>4</rozd>
 		<bd>1</bd>
@@ -181,7 +181,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1311'><!--зю ор-->
+<row code='130503'><!--зю ор-->
 	<query>
 		<rozd>4</rozd>
 		<bd>1</bd>
@@ -190,7 +190,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1312'><!--зю ор-->
+<row code='130505'><!--зю ор-->
 	<query>
 		<rozd>4</rozd>
 		<bd>1</bd>
@@ -199,7 +199,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1102'>
+<row code='110202'>
 	<query>
 		<rozd>4</rozd>
 		<bd>1</bd>
@@ -222,7 +222,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1815'>
+<row code='180415'>
 	<query>
 		<rozd>4</rozd>
 		<bd>1</bd>
@@ -231,7 +231,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1804'>
+<row code='180400'>
 	<query>
 		<rozd>1</rozd>
 		<bd>1</bd>
@@ -240,7 +240,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1302'>
+<row code='130299'>
 	<query>
 		<rozd>3</rozd>
 		<bd>0</bd>
@@ -256,7 +256,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1303'>
+<row code='130399'>
 	<query>
 		<rozd>1</rozd>
 		<bd>0</bd>
@@ -272,7 +272,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='2201'>
+<row code='220100'>
 	<query>
 		<rozd></rozd>
 		<bd>1</bd>
@@ -281,7 +281,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='3101'>
+<row code='310100'>
 	<query>
 		<rozd></rozd>
 		<bd>1</bd>
@@ -291,7 +291,7 @@
 	</query>
 </row>
 <!-- ІНШІ МІСЦЕВІ -->
-<row code='2100'>
+<row code='240600'>
 	<query>
 		<rozd></rozd>
 		<bd>1</bd>
@@ -335,7 +335,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1901'>
+<row code='190100'>
 	<query>
 		<rozd>3</rozd>
 		<bd>0</bd>
@@ -353,7 +353,7 @@
 </row>
 <!-- Единый налог -->
 <!-- Криворожский район -->
-<row code='1805'>
+<row code='180501'>
 	<query>
 		<rozd>5</rozd>
 		<bd>1</bd>
@@ -376,7 +376,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1899'><!-- ед ф л -->
+<row code='180502'><!-- ед ф л -->
 	<query>
 		<rozd>5</rozd>
 		<bd>1</bd>
@@ -399,7 +399,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1202'>
+<row code='120200'>
 	<query>
 		<rozd>4</rozd>
 		<bd>1</bd>
@@ -429,7 +429,7 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='1801'>
+<row code='180100'>
 	<query>
 		<rozd>2</rozd>
 		<bd>1</bd>

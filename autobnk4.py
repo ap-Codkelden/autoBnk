@@ -48,17 +48,32 @@ class db_processing:
 		print('>> Engine created.')
 		self.db_cur = self.engine.cursor()
 
+	def cross_process(self):
+		self.db_cur.execute("ALTER TABLE etalon RENAME TO temp_names")
+		self.db_cur.execute("CREATE TABLE bank_sum (name text, raj83 integer, raj87 integer, raj18 integer)")
+		self.db_cur.execute("INSERT INTO bank_sum SELECT u.name, s83.zn as raj83, s87.zn as raj87, s18.zn as raj18 from temp_names u left outer join itog s83 on u.code = s83.code and s83.raj = 83 left outer join itog s87 on u.code = s87.code and s87.raj = 87 left outer join itog s18 on u.code = s18.code and s18.raj = 18")
+
+	def make_etalon(self):
+		etalon_row = ET.parse('config\\etalon.xml')
+		table = etalon_row.getroot()
+		for row in table:
+			#print('insert into etalon (code, name) values ("%s", "%s")' % (row[0].text, row[1].text))
+			self.db_cur.execute('insert into etalon (code, name) values ("%s", "%s")' % (row[0].text, row[1].text))
+			self.engine.commit()
+
 	def create_tables(self, raj_list):
 		# создание таблиц
 		self.db_cur.execute("CREATE TABLE bank (raj integer, rozd text, rd text, pg text, st text, zn integer, bd integer)")
 		self.engine.commit()
 		self.db_cur.execute("CREATE TABLE itog (code text, raj integer, zn integer)")
 		self.engine.commit()
+		self.db_cur.execute("CREATE TABLE etalon (code text, name text)")
+		self.engine.commit()
 
 	def fill_table(self, tr_values, raj_code):
 		# заполнение таблицы
 		for e in tr_values:
-			self.db_cur.execute('insert into bank values (%s, %s, %s, %s, %s, %s, %s)' % 
+			self.db_cur.execute('insert into bank values (%s, %s, "%s", "%s", "%s", %s, %s)' % 
 				(raj_dict[raj_code],e[0],e[1][0],e[1][1],e[1][2],e[2],str(e[3])))
 			self.engine.commit()
 
@@ -148,6 +163,10 @@ if __name__=="__main__":
 	base = db_processing()
 	bank_dir=config()
 	make(bank_dir)
-	#base.retrieve_table('bank')
 	base.processing()
+	base.make_etalon()
+	base.cross_process()
+	base.retrieve_table('bank')
 	base.retrieve_table('itog')
+	base.retrieve_table('bank_sum')
+	base.retrieve_table('temp_names')
