@@ -48,15 +48,20 @@ class db_processing:
 		print('>> Engine created.')
 		self.db_cur = self.engine.cursor()
 
+#"CREATE TABLE itog (code text, raj integer, zn integer)")
+
 	def cross_process(self):
 		self.db_cur.execute("ALTER TABLE etalon RENAME TO temp_names")
+		self.db_cur.execute("INSERT INTO itog \
+								SELECT code AS code, raj AS raj, SUM(zn) as zn \
+								FROM itog_tmp GROUP BY code, raj")
 		self.db_cur.execute("CREATE TABLE bank_sum (name text, raj83 integer, raj87 integer, raj18 integer)")
 		self.db_cur.execute("INSERT INTO bank_sum \
 								SELECT u.name, \
-										s83.zn as raj83, \
-										s87.zn as raj87, \
-										s18.zn as raj18 \
-								from temp_names u \
+										sum(s83.zn) as raj83, \
+										sum(s87.zn) as raj87, \
+										sum(s18.zn) as raj18 \
+								FROM temp_names u \
 									left outer join \
 										itog s83 on u.code = s83.code \
 										and s83.raj = 83 \
@@ -65,7 +70,9 @@ class db_processing:
 										and s87.raj = 87 \
 									left outer join \
 										itog s18 on u.code = s18.code \
-										and s18.raj = 18")
+										and s18.raj = 18 \
+								GROUP BY u.code")
+		# ПРОБОВАТЬ ГРУППИРОВАТЬ И СУММИРОВАТЬ
 
 	def make_etalon(self):
 		etalon_row = ET.parse('config\\etalon.xml')
@@ -78,9 +85,8 @@ class db_processing:
 	def create_tables(self, raj_list):
 		# создание таблиц
 		self.db_cur.execute("CREATE TABLE bank (raj integer, rozd text, rd text, pg text, st text, zn integer, bd integer)")
-		#self.engine.commit()
+		self.db_cur.execute("CREATE TABLE itog_tmp (code text, raj integer, zn integer)")
 		self.db_cur.execute("CREATE TABLE itog (code text, raj integer, zn integer)")
-		#self.engine.commit()
 		self.db_cur.execute("CREATE TABLE etalon (code text, name text)")
 		self.engine.commit()
 
@@ -116,7 +122,7 @@ class db_processing:
 		# self.db_cur.fetchall())
 		for e in self.db_cur.fetchall():
 			# район, код, сумма
-			self.db_cur.execute("insert into itog values (%s, %s, %d)" % (code, e[0], e[1]))
+			self.db_cur.execute("insert into itog_tmp values (%s, %s, %d)" % (code, e[0], e[1]))
 
 
 	def processing(self):
