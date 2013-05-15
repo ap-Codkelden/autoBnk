@@ -51,17 +51,17 @@ class db_processing:
 #"CREATE TABLE itog (code text, raj integer, zn integer)")
 
 	def cross_process(self):
-		self.db_cur.execute("ALTER TABLE etalon RENAME TO temp_names")
+		#self.db_cur.execute("ALTER TABLE etalon RENAME TO temp_names")
 		self.db_cur.execute("INSERT INTO itog \
 								SELECT code AS code, raj AS raj, SUM(zn) as zn \
 								FROM itog_tmp GROUP BY code, raj")
-		self.db_cur.execute("CREATE TABLE bank_sum (name text, raj83 integer, raj87 integer, raj18 integer)")
+		self.db_cur.execute("CREATE TABLE bank_sum (code text, raj83 integer, raj87 integer, raj18 integer)")
 		self.db_cur.execute("INSERT INTO bank_sum \
-								SELECT u.name, \
+								SELECT u.code, \
 										sum(s83.zn) as raj83, \
 										sum(s87.zn) as raj87, \
 										sum(s18.zn) as raj18 \
-								FROM temp_names u \
+								FROM etalon u \
 									left outer join \
 										itog s83 on u.code = s83.code \
 										and s83.raj = 83 \
@@ -72,14 +72,21 @@ class db_processing:
 										itog s18 on u.code = s18.code \
 										and s18.raj = 18 \
 								GROUP BY u.code")
-		# ПРОБОВАТЬ ГРУППИРОВАТЬ И СУММИРОВАТЬ
+		self.db_cur.execute("SELECT e.nompp, e.name, \
+									s.raj83, s.raj87, s.raj18 \
+									from etalon e \
+									left outer join \
+									bank_sum s \
+									on e.code = s.code\
+									ORDER BY nompp")
+		return(self.db_cur.fetchall())
 
 	def make_etalon(self):
 		etalon_row = ET.parse('config\\etalon.xml')
 		table = etalon_row.getroot()
 		for row in table:
 			#print('insert into etalon (code, name) values ("%s", "%s")' % (row[0].text, row[1].text))
-			self.db_cur.execute('insert into etalon (code, name) values ("%s", "%s")' % (row[0].text, row[1].text))
+			self.db_cur.execute('insert into etalon (code, name, nompp) values ("%s", "%s", %d)' % (row[0].text, row[1].text, int(row[2].text)))
 			self.engine.commit()
 
 	def create_tables(self, raj_list):
@@ -87,7 +94,8 @@ class db_processing:
 		self.db_cur.execute("CREATE TABLE bank (raj integer, rozd text, rd text, pg text, st text, zn integer, bd integer)")
 		self.db_cur.execute("CREATE TABLE itog_tmp (code text, raj integer, zn integer)")
 		self.db_cur.execute("CREATE TABLE itog (code text, raj integer, zn integer)")
-		self.db_cur.execute("CREATE TABLE etalon (code text, name text)")
+		self.db_cur.execute("CREATE TABLE etalon (code text, name text, nompp integer)")
+		#self.db_cur.execute("CREATE TABLE out (code text, name text, nompp integer)")
 		self.engine.commit()
 
 	def fill_table(self, tr_values, raj_code):
@@ -116,10 +124,8 @@ class db_processing:
 		rd = params[2] # всегда присутствует
 		pg = ('' if params[3]==None else " AND pg='"+params[3]+"'")
 		coef = params[4] # всегда присутствует
-		query = "SELECT raj, SUM(zn) * %s as 'zn' FROM bank WHERE bd=%s AND rd='%s' %s %s GROUP BY raj;" % (params[4], params[1], params[2], pg, rozd)
-		# print(query)
+		query = "SELECT raj, SUM(zn) * %f as 'zn' FROM bank WHERE bd=%s AND rd='%s' %s %s GROUP BY raj;" % (float(params[4]), params[1], params[2], pg, rozd)
 		self.db_cur.execute(query)
-		# self.db_cur.fetchall())
 		for e in self.db_cur.fetchall():
 			# район, код, сумма
 			self.db_cur.execute("insert into itog_tmp values (%s, %s, %d)" % (code, e[0], e[1]))
@@ -185,8 +191,9 @@ if __name__=="__main__":
 	make(bank_dir)
 	base.processing()
 	base.make_etalon()
-	base.cross_process()
-	base.retrieve_table('bank')
-	base.retrieve_table('itog')
-	base.retrieve_table('bank_sum')
-	base.retrieve_table('temp_names')
+	out = base.cross_process()
+	print('out', out)
+	#base.retrieve_table('bank')
+	#base.retrieve_table('itog')
+	#base.retrieve_table('bank_sum')
+	#base.retrieve_table('etalon')
