@@ -3,125 +3,156 @@
 	<row>
 		<code>140100</code>
 		<name>ПДВ</name>
+		<nompp>1</nompp>
 	</row>
 	<row>
 		<code>110200</code>
 		<name>Податок на прибуток</name>
+		<nompp>2</nompp>
 	</row>
 	<row>
 		<code>210100</code>
 		<name>Частина чистого прибутку</name>
+		<nompp>3</nompp>		
 	</row>
 	<row>
 		<code>130200</code>
 		<name>Вода</name>
+		<nompp>4</nompp>
 	</row>
 	<row>
 		<code>190600</code>
 		<name>Виноградарство</name>
+		<nompp>5</nompp>
 	</row>
 	<row>
 		<code>130300</code>
 		<name>Надра</name>
+		<nompp>6</nompp>
 	</row>
 	<row>
 		<code>210810</code>
 		<name>Пеня у сферi ЗЕД</name>
+		<nompp>7</nompp>
 	</row>
 	<row>
 		<code>310100</code>
 		<name>Реалізація безх. майна</name>
+		<nompp>8</nompp>
 	</row>
 	<row>
 		<code>190700</code>
 		<name>Iнші</name>
+		<nompp>9</nompp>
 	</row>
 	<row>
 		<code>190100</code>
 		<name>Екологiчний податок</name>
+		<nompp>10</nompp>
 	</row>
 	<row>
 		<code>140107</code>
 		<name>ПДВ перероб. пiдр-в</name>
+		<nompp>11</nompp>
 	</row>
 	<row>
 		<code>110100</code>
 		<name>Податок на доходи</name>
+		<nompp>12</nompp>
 	</row>
 	<row>
 		<code>130102</code>
 		<name>Лiсовi ресурси</name>
+		<nompp>13</nompp>
 	</row>
 	<row>
 		<code>190401</code>
 		<name>Фiксований сiльськогосп.</name>
+		<nompp>14</nompp>
 	</row>
 	<row>
 		<code>130501</code>
 		<name>Земля юр. осіб</name>
+		<nompp>15</nompp>
 	</row>
 	<row>
 		<code>130502</code>
 		<name>Оренда юр. осіб</name>
+		<nompp>16</nompp>
 	</row>
 	<row>
 		<code>130503</code>
 		<name>Земля фіз. осіб</name>
+		<nompp>17</nompp>
 	</row>
 	<row>
 		<code>130505</code>
 		<name>Оренда фіз. осіб</name>
+		<nompp>18</nompp>
 	</row>
 	<row>
 		<code>110202</code>
 		<name>Податок на прибуток</name>
+		<nompp>19</nompp>
 	</row>
 	<row>
 		<code>180400</code>
 		<name>Патенти</name>
+		<nompp>20</nompp>
 	</row>
 	<row>
 		<code>130299</code>
 		<name>Вода</name>
+		<nompp>21</nompp>
 	</row>
 	<row>
 		<code>130399</code>
 		<name>Надра</name>
+		<nompp>22</nompp>
 	</row>
 	<row>
 		<code>220100</code>
 		<name>Плата за лiцензiї</name>
+		<nompp>23</nompp>
 	</row>
 	<row>
 		<code>310100</code>
 		<name>Реалізація безх. майна</name>
+		<nompp>24</nompp>
 	</row>
 	<row>
 		<code>240600</code>
 		<name>Iнші</name>
+		<nompp>25</nompp>
 	</row>
 	<row>
 		<code>180415</code>
 		<name>Патенти (нафтопрод.)</name>
+		<nompp>26</nompp>
 	</row>
 	<row>
-		<code>190100</code>
+		<code>190199</code>
 		<name>Екологiчний податок</name>
+		<nompp>27</nompp>
 	</row>
 	<row>
 		<code>180501</code>
 		<name>Єдиний з юр. осiб</name>
+		<nompp>28</nompp>
 	</row>
 	<row>
 		<code>180502</code>
 		<name>Єдиний з фiз. осiб</name>
+		<nompp>29</nompp>
 	</row>
 	<row>
 		<code>120200</code>
 		<name>Транспорт</name>
+		<nompp>30</nompp>
 	</row>
 	<row>
 		<code>180100</code>
 		<name>Нерух. майно</name>
+		<nompp>31</nompp>
 	</row>
 </table>
