@@ -21,7 +21,12 @@ version 4.0
   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE. """
+  THE SOFTWARE. 
+
+  
+  TODO:
+  переписать код так, чтобы не имел значения порядок элементов в конфигах
+  """
 
 import sqlite3
 import xml.etree.ElementTree as ET
@@ -63,16 +68,25 @@ class writer:
 		print(self.s[0].tag)
 		for e in self.s[0]:
 			lines.append(int(e.text))
-		print(lines)
-		print(bank)
+		#print(lines)
+		self.bank=bank
 
-	def make_var(self):
-		pass
+	def make_var(self, varname):
+		s18 = s83 = s87 = 0
+		for d in self.s.iter('sum'):
+			if d[0].tag=='varname' and d[0].text==varname:
+				numb3rs = [int(f) for f in d[1].text.split(',')]
+		#print(numb3rs)
+		for i in self.bank:
+			if i[0] in numb3rs:
+				s83 = ((s83 + 0) if i[2]==None else (s83+i[2]))
+				print(s83)
+				s87 = ((s87 + 0) if i[3]==None else (s87+i[3]))
+				print(s87)
+				s18 = ((s18 + 0) if i[4]==None else (s18+i[4]))
+				print(s18)
+		return [d[2].text, s83, s87, s18]
 
-	def line_sum(self, var_name, description, lines):
-		exec(var_name=0)
-		s_line=
-		for e in bank:
 
 class db_processing:
 	def __init__(self):
@@ -223,9 +237,13 @@ if __name__=="__main__":
 	base.processing()
 	base.make_etalon()
 	out = base.cross_process()
+	print(out)
 	
 	q = writer(out)
-	#q.test()
+	print(q.make_var('db'))
+	print(q.make_var('mb'))
+	print(q.make_var('zu'))
+	print(q.make_var('zf'))
 	#base.retrieve_table('bank')
 	#base.retrieve_table('itog')
 	#base.retrieve_table('bank_sum')
