@@ -3,7 +3,7 @@ AutoBnk4 main
 version 4.0
 
   The MIT License (MIT)
-  Copyright (c) 2013 Renat Nasridinov, <mavladi@gmail.com>
+  Copyright (c) 2008 - 2013 Renat Nasridinov, <mavladi@gmail.com>
   
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
@@ -58,14 +58,21 @@ raj_dict = {}  # словарь сопоставления казначейст�
 class writer:
 	def __init__(self, bank):
 		self.summary = ET.parse('config\\summary.xml')
-		self.lines=[]
-		s = self.summary.getroot()
-		print(s[0].tag)
-		for e in s[0]:
-			self.lines.append(e.text)
+		lines=[]
+		self.s = self.summary.getroot()
+		print(self.s[0].tag)
+		for e in self.s[0]:
+			lines.append(int(e.text))
+		print(lines)
+		print(bank)
 
 	def make_var(self):
 		pass
+
+	def line_sum(self, var_name, description, lines):
+		exec(var_name=0)
+		s_line=
+		for e in bank:
 
 class db_processing:
 	def __init__(self):
@@ -75,7 +82,6 @@ class db_processing:
 		self.db_cur = self.engine.cursor()
 
 	def cross_process(self):
-		#self.db_cur.execute("ALTER TABLE etalon RENAME TO temp_names")
 		self.db_cur.execute("INSERT INTO itog \
 								SELECT code AS code, raj AS raj, SUM(zn) as zn \
 								FROM itog_tmp GROUP BY code, raj")
@@ -217,8 +223,7 @@ if __name__=="__main__":
 	base.processing()
 	base.make_etalon()
 	out = base.cross_process()
-	print(out[0][1], b_number(out[0][2]), b_number(out[0][3]), b_number(out[0][2]+out[0][3]), \
-			b_number(out[0][4]), b_number(out[0][2]+out[0][3]+out[0][4]))
+	
 	q = writer(out)
 	#q.test()
 	#base.retrieve_table('bank')
