@@ -31,5 +31,36 @@
 			<lines>17, 18</lines>
 			<desc>ЗЕМЛЯ ФІЗ. ОСОБИ</desc>
 		</sum>
+		<sum>
+			<!-- Ед. налог -->
+			<varname>ed</varname>
+			<lines>28, 29</lines>
+			<desc>ЄДИНИЙ ПОДАТОК</desc>
+		</sum>
 	</sums>
+	<inserts>
+		<insert>
+			<line>10</line>
+			<varname>db</varname>
+		</insert>
+		<insert>
+			<line>13</line>
+			<varname>zu</varname>
+		</insert>
+		<insert>
+			<line>15</line>
+			<varname>zf</varname>
+		</insert>
+		<insert>
+			<line>26</line>
+			<varname>ed</varname>
+		</insert>
+		<insert>
+			<line>30</line>
+			<varname>mb</varname>
+		</insert>
+	</inserts>
+	<divs>
+		<line></line>
+	</divs>
 </summary>

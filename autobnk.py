@@ -28,25 +28,22 @@ version 4.0
   переписать код так, чтобы не имел значения порядок элементов в конфигах
   """
 
+import argparse
 import sqlite3
 import xml.etree.ElementTree as ET
 import os.path
 from os import listdir
 from os.path import isfile, join
 
-"""
-arg_parser = argparse.ArgumentParser(description='Считает сумму по заданному счету, \
-                                    исключая внутриказначейские (указать ОКПО обязательно)')
-arg_parser.add_argument(help="имя файла", action="store", dest='file_name')
-arg_parser.add_argument(help="номер счёта", action="store", type=int, dest='account')
-arg_parser.add_argument(help="ОКПО казначейства", action="store", type=str, \
-                        dest='preverse_tin')
-arg_parser.add_argument('-a', '--all' , help='как физические, так и юридические лица', \
-                        action='store_true',default=False)
+arg_parser = argparse.ArgumentParser(description='Выборка сумм уплаченных налогов из  \
+                                    файлов ГКС (приказ ГКУ/ГНСУ №74/194 от 25.04.2002)', \
+                                    epilog='По умолчанию вывод осуществляестя в ASCII-таблицу\
+                                    в файле bank.txt каталога, указанного в конфигурационном \
+                                    файле (см. документацию)')
+arg_parser.add_argument('-html', '--htmlfile', help='в файл HTML', \
+                        action='store_true', default=False, dest='htmlfile')
 
-results = arg_parser.parse_args()
 
-"""
 
 """
 Глобальные списки, константы и прочее
@@ -56,43 +53,116 @@ DB = 0
 # константа местный бюджет
 MB = 1
 
+HEADER = ('Податок','Жовтн.','Тернів.','Північн.','Кр. р-н.','ВСЬОГО')
+
 tr_ext = []    # кортеж для расширений файлов казны
 raj_dict = {}  # словарь сопоставления казначейств районам
 
-# класс вывода в файлы
+
 class writer:
+	def __init__(self, array):
+		self.a = []
+		for i in array:
+			self.a.append([i[0], 0 if i[1] == None else hrn(i[1]), \
+				0 if i[2] == None else hrn(i[2]), \
+				hrn((0 if i[1] == None else i[1]) + (0 if i[2] == None else i[2])), \
+				0 if i[3] == None else hrn(i[3]), \
+				hrn((0 if i[1] == None else i[1]) + (0 if i[2] == None else i[2]) + \
+					(0 if i[3] == None else hrn(i[3])))])
+
+		# константа для количества столбцов
+		self.COLUMN_COUNT = 6
+
+	def max_len(self):
+		# ширина столбцов в порядке следования
+		out_width=[]
+		for i in range(self.COLUMN_COUNT):
+			# пустой временный список для длин строк в столбце
+			temp = []
+			for line in self.a:
+				temp.append(len(line[i]) if i==0 else len(str(line[i])))
+			out_width.append(max(temp))
+		self.cols_width =  out_width
+
+	def write_txt(self):
+		#txt_file = open(out_directory+'\\bank.txt', 'w')
+		#txt_file.write('win')
+		#txt_file.close()
+
+		divider = ''
+		for i in self.cols_width:
+			divider = divider + '+' + '-' * (i+1)
+		divider = divider + '+'
+		print(divider)
+		h = ' '
+		for i in list(enumerate(HEADER)):
+			#print(self.cols_width[i[0]],len(i[1]))
+			over_len = self.cols_width[i[0]] - len(i[1])
+			#print(over_len)
+			if over_len % 2 == 0:
+				last_piese = '|'
+			else:
+				last_piese = ' |'
+			h = h + ' ' + ' '*int((over_len/2)) + i[1] + ' '*int((over_len / 2 )) + last_piese
+		print(h)
+		print(divider)
+		line = '|'
+		for p in self.a:
+			z = list(enumerate(p))
+			print(z)
+
+
+
+
+# класс формирования основной таблицы в спсике списков
+class make_table:
 	def __init__(self, bank):
 		self.summary = ET.parse('config\\summary.xml')
 		lines=[]
 		self.s = self.summary.getroot()
-		print(self.s[0].tag)
 		for e in self.s[0]:
 			lines.append(int(e.text))
-		#print(lines)
+		# Здесь self.bank - кортеж, уже содержащий суммы по строкам, 
+		# и с номером впереди, по которому была сортировка
 		self.bank=bank
 
 	def make_var(self, varname):
 		s18 = s83 = s87 = 0
 		for d in self.s.iter('sum'):
-			if d[0].tag=='varname' and d[0].text==varname:
+			if d[0].text==varname:
+				desc = d[2].text
 				numb3rs = [int(f) for f in d[1].text.split(',')]
-		#print(numb3rs)
-		for i in self.bank:
-			if i[0] in numb3rs:
-				s83 = ((s83 + 0) if i[2]==None else (s83+i[2]))
-				print(s83)
-				s87 = ((s87 + 0) if i[3]==None else (s87+i[3]))
-				print(s87)
-				s18 = ((s18 + 0) if i[4]==None else (s18+i[4]))
-				print(s18)
-		return [d[2].text, s83, s87, s18]
+				for i in self.bank:
+					if i[0] in numb3rs:
+						s83 = ((s83 + 0) if i[2]==None else (s83+i[2]))
+						s87 = ((s87 + 0) if i[3]==None else (s87+i[3]))
+						s18 = ((s18 + 0) if i[4]==None else (s18+i[4]))
+		return [desc, s83, s87, s18]
+
+	def fill_list(self):
+		# сюда запишем результат
+		over_list = []
+		""" создание полного массива для дальнейшей обрботки """
+		# находим раздел конфига inserts 
+		f = self.summary.find('inserts')
+		z = enumerate(self.bank)
+		# z - нумерованный список, УЖЕ СОДЕРЖАЩИЙ ИТОГИ
+		for element in z:
+			over_list.append([element[1][1], element[1][2], element[1][3], element[1][4]])
+			# нумерация с 0, не забываем
+			for ins_item in f:
+				if element[0] == int(ins_item[0].text):
+					over_list.append(self.make_var(ins_item[1].text))
+		# over_list - просто готовый список списков
+		# print('over_list', over_list)
+		return over_list
 
 
 class db_processing:
 	def __init__(self):
 		# база данных в памяти
 		self.engine = sqlite3.connect(':memory:')
-		print('>> Engine created.')
+		#print('>> Engine created.')
 		self.db_cur = self.engine.cursor()
 
 	def cross_process(self):
@@ -215,36 +285,43 @@ def config():
 		bank_dir=tr[0][0].text
 		if not os.path.exists(tr[0][1].text):
 			os.makedirs(tr[0][1].text)
+			#print(tr[0][1].text)
 		for tr_code in tr.iter('code'):
 			tr_ext.append(tr_code.text)
 		for item in tr.iter('file'):
 			raj_dict[item[1].text]=item[2].text
 		return bank_dir
 
+def get_outdir_name():
+	treasury_conf = ET.parse('config\\config.xml')
+	tr = treasury_conf.getroot()
+	return tr[0][1].text
+
 def make(bankpath):
 	base.create_tables(tr_ext)
 	# Создание списков файлов 
-	for i in [ f for f in listdir(bank_dir) if isfile(os.path.join(bank_dir,f)) ]:
-		parse_file(bank_dir,i)
+	for i in [ f for f in listdir(bankpath) if isfile(os.path.join(bankpath,f)) ]:
+		parse_file(bankpath,i)
 
-def b_number(num):
+def hrn(num):
 	return round(num/100)
 
+
+
 if __name__=="__main__":
+	results = arg_parser.parse_args()
+	print(results)
+	
+	# подготовка, генерация таблицы в 
+	# fill_list()
 	base = db_processing()
-	bank_dir=config()
-	make(bank_dir)
+	make(config())
 	base.processing()
 	base.make_etalon()
-	out = base.cross_process()
-	print(out)
+	out_directory = get_outdir_name()
+	print('out_directory',out_directory)
 	
-	q = writer(out)
-	print(q.make_var('db'))
-	print(q.make_var('mb'))
-	print(q.make_var('zu'))
-	print(q.make_var('zf'))
-	#base.retrieve_table('bank')
-	#base.retrieve_table('itog')
-	#base.retrieve_table('bank_sum')
-	#base.retrieve_table('etalon')
+	q = make_table(base.cross_process())
+	g=writer(q.fill_list())
+	g.max_len()
+	g.write_txt()
