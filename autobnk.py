@@ -53,7 +53,7 @@ DB = 0
 # константа местный бюджет
 MB = 1
 
-HEADER = ('Податок','Жовтн.','Тернів.','Північн.','Кр. р-н.','ВСЬОГО')
+header = ['Податок','Жовтн','Тернів','Північн','Кр. р-н','ВСЬОГО']
 
 tr_ext = []    # кортеж для расширений файлов казны
 raj_dict = {}  # словарь сопоставления казначейств районам
@@ -81,35 +81,34 @@ class writer:
 			temp = []
 			for line in self.a:
 				temp.append(len(line[i]) if i==0 else len(str(line[i])))
-			out_width.append(max(temp))
+			out_width.append(max(temp)+2)
 		self.cols_width =  out_width
+
+	def print_divider(self):
+		# просто выводит строку разделитель
+		divider = ''
+		for i in self.cols_width:
+			# ширина столбца + 2 символа
+			divider = divider + '+' + '-' * (i+2)
+		divider = divider + '+'
+		print(divider)
 
 	def write_txt(self):
 		#txt_file = open(out_directory+'\\bank.txt', 'w')
 		#txt_file.write('win')
 		#txt_file.close()
 
-		divider = ''
-		for i in self.cols_width:
-			divider = divider + '+' + '-' * (i+1)
-		divider = divider + '+'
-		print(divider)
-		h = ' '
-		for i in list(enumerate(HEADER)):
-			#print(self.cols_width[i[0]],len(i[1]))
-			over_len = self.cols_width[i[0]] - len(i[1])
-			#print(over_len)
-			if over_len % 2 == 0:
-				last_piese = '|'
-			else:
-				last_piese = ' |'
-			h = h + ' ' + ' '*int((over_len/2)) + i[1] + ' '*int((over_len / 2 )) + last_piese
-		print(h)
-		print(divider)
-		line = '|'
-		for p in self.a:
-			z = list(enumerate(p))
-			print(z)
+
+		h = ''
+
+
+	def make_header_cell(self, head_cell_text, space_count):
+		try:
+			#if space_count
+			return (' '* int(space_count)) + head_cell_text + (' ' * int(space_count))  + '|'
+		except:
+			print('space_count',space_count)
+
 
 
 
