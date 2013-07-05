@@ -16,7 +16,7 @@
 		<sum>
 			<!-- Сумма местный бюджет -->
 			<varname>mb</varname>
-			<lines>11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31</lines>
+			<lines>12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31</lines>
 			<desc>МІСЦЕВИЙ БЮДЖЕТ</desc>
 		</sum>
 		<sum>
@@ -61,6 +61,7 @@
 		</insert>
 	</inserts>
 	<divs>
-		<line></line>
+		<singleline>9,15,21,28</singleline>
+		<doubleline>12,36</doubleline>
 	</divs>
 </summary>

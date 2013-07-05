@@ -1,7 +1,7 @@
-<?xml version="1.1" encoding='UTF-8' ?>
+<?xml version="1.0" encoding='UTF-8' ?>
 <config>
 	<path>
-		<path-bank>d:\bank1</path-bank>
+		<path-bank>d:\bank</path-bank>
 		<path-out>c:\tax\txt</path-out>
 	</path>
 	<treasury_files>
