@@ -26,4 +26,5 @@ Autobnk. История версий
 
 
 [dbftr]: https://github.com/ap-Codkelden/autoBnk/blob/master/dbftr.py
-[bankcss]: https://github.com/ap-Codkelden/autoBnk/blob/master/config/config.xml
+[bankcss]: https://github.com/ap-Codkelden/autoBnk/blob/master/config/bank.css
+
