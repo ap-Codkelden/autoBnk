@@ -59,3 +59,4 @@ class dbfToList:
 			rowlist.append([g[11:12],[g[15:23][:4],g[15:23][4:6], \
 				g[15:23][6:8]], int(g[23:40]), self.dbf.split('\\')[-1][2]])
 		return rowlist
+		
