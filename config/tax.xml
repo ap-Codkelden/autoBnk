@@ -92,6 +92,13 @@
 		<pg>03</pg>
 		<coef>1.00</coef>
 	</query>
+	<query>
+		<rozd>1</rozd>
+		<bd>0</bd>
+		<rd>1909</rd>
+		<pg></pg>
+		<coef>1.00</coef>
+	</query>
 </row>
 <row code='190600'>
 	<query>
