@@ -41,8 +41,8 @@ from dbftr import dbfToList
 
 arg_parser = argparse.ArgumentParser(description='Выборка сумм уплаченных \
 	налогов из файлов ГКС (приказ ГКУ/ГНСУ №74/194 от 25.04.2002)', \
-    epilog='По умолчанию вывод осуществляестя в ASCII-таблицу\
-    в файле bankMMDD.txt каталога, указанного в конфигурационном \
+    epilog='По умолчанию вывод осуществляестя в HTML-файл\
+    bankMMDD.html в каталог, указанный в конфигурационном \
     файле (см. документацию)')
 
 arg_parser.add_argument('-xml', '--xmlfile', help='генерировать XML-файл \
@@ -108,11 +108,6 @@ class writer:
 			ai2 = 0 if i[2] == None else hrn(i[2])
 			ai3 = 0 if i[3] == None else hrn(i[3])
 			self.a.append([i[0], ai1, ai2, ai1+ai2, ai3, ai1+ai2+ai3])
-
-		# константа для количества столбцов
-		self.COLUMN_COUNT = 6
-		# заготовка линии-разделителя
-		self.divline = ''
 
 	def get_list(self):
 		return self.a
