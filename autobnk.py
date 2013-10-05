@@ -310,7 +310,7 @@ class write_file():
 		self.tr_date = fn
 
 	def get_css(self):
-		f = open('bank.css','r')
+		f = open('config\\bank.css','r')
 		return f.read().replace('\n', '')
 
 	def file_name(self, extension):
