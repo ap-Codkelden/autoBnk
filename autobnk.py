@@ -25,13 +25,15 @@ version 4.5
 
  TODO:
 * переписать код так, чтобы не имел значения порядок элементов в конфигах
-* попробовать позже заменить имена файлов конфигов на глобальные переменные """
+* попробовать позже заменить имена файлов конфигов на глобальные переменные 
+"""
 
 import argparse
-import webbrowser
+import math
 import sqlite3
 import sys
 import xml.etree.ElementTree as ET # полёт навигатора!!!
+import webbrowser
 from datetime import date
 import os.path
 from os import listdir
@@ -102,12 +104,11 @@ class writer:
 	def __init__(self, array):
 		self.a = []
 		for i in array:
-			hrn = lambda x: abs(round(x/100-0.02))
 			# ai -- append_item
-			ai1 = 0 if i[1] == None else hrn(i[1])
-			ai2 = 0 if i[2] == None else hrn(i[2])
-			ai3 = 0 if i[3] == None else hrn(i[3])
-			self.a.append([i[0], ai1, ai2, ai1+ai2, ai3, ai1+ai2+ai3])
+			ai1 = 0 if i[1] == None else i[1]
+			ai2 = 0 if i[2] == None else i[2]
+			ai3 = 0 if i[3] == None else i[3]
+			self.a.append([i[0],ai1,ai2,ai1+ai2,ai3,ai1+ai2+ai3])
 
 	def get_list(self):
 		return self.a
@@ -168,7 +169,7 @@ class make_table:
 				# а если номер строки совпдает -- вставляем строку итогов
 				if element[0] == int(ins_item[0].text):
 					over_list.append(self.make_sum(ins_item[1].text))
-		# over_list - просто готовый список списков
+		# over_list - просто готовый список списков, но без итоговых столбцов
 		return over_list
 
 class db_processing:
@@ -346,8 +347,8 @@ class write_file():
 		Страница формируется как:
 			HTML_BLOCK_START + __page_body + HTML_BLOCK_END
 		и записывается в дальнейшем в файл процедурой write_html.
-
 		"""
+		hrn = lambda x: math.ceil(x/100) if ((x/100) % 1) > 0.51 else math.floor(x/100)
 		__delims = self.get_delimiters_position()
 		__counter = 0
 		__page_body = ''
@@ -361,8 +362,7 @@ class write_file():
 				css = ' class="emphasis"'
 			else:
 				css = ''
-			__page_body=__page_body + "<tr{0}><td class='names'>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>"\
-				.format(css,r[0],r[1],r[2],r[3],r[4],r[5])
+			__page_body=__page_body + "<tr{0}><td class='names'>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>".format(css,r[0],hrn(r[1]),hrn(r[2]),hrn(r[3]),hrn(r[4]),hrn(r[5]))
 			__counter+=1
 		# __header просто синтаксический сахар 
 		__header = HTML_BLOCK_START.format(self.get_css(),self.dt.current_date(), \
@@ -440,7 +440,8 @@ def make(bankpath):
 	""" Создание списка казначейских файлов """
 	files = [f for f in listdir(bankpath) if isfile(os.path.join(bankpath,f)) \
 		and f[4]=='0' and ((f[3]=='1' and not f[9:] in TREASURY_INVERSE)  \
-		or ((f[2]=='0' or (f[2]=='1' and f[3]=='0')) and f[9:] in TREASURY_INVERSE))]
+		or ((f[2]=='0' or (f[2]=='1' and f[3]=='0')) and f[9:] in \
+		TREASURY_INVERSE))]
 	for i in files:
 		parse_file(bankpath,i)
 	# вернем 1е имя файла для получения даты
