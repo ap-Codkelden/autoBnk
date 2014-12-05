@@ -18,6 +18,36 @@
 		<coef>1.00</coef> 
 	</query>
 	</row>
+	<row code='110230'>
+		<query>
+			<rozd>1</rozd> 
+			<bd>0</bd> 
+			<rd>1102</rd> 
+			<pg>31</pg> 
+			<coef>1.00</coef> 
+		</query>
+		<query>
+			<rozd>1</rozd> 
+			<bd>0</bd> 
+			<rd>1102</rd> 
+			<pg>33</pg> 
+			<coef>1.00</coef> 
+		</query>
+		<query>
+			<rozd>1</rozd> 
+			<bd>0</bd> 
+			<rd>1102</rd> 
+			<pg>40</pg> 
+			<coef>1.00</coef> 
+		</query>
+		<query>
+			<rozd>1</rozd> 
+			<bd>0</bd> 
+			<rd>1102</rd> 
+			<pg>45</pg> 
+			<coef>1.00</coef> 
+		</query>
+	</row>
 	<row code='210100'>
 	<query>
 		<rozd></rozd>
@@ -71,6 +101,8 @@
 		<pg></pg>
 		<coef>1.00</coef>
 	</query>
+</row>
+<row code='240613'>
 	<query>
 		<rozd></rozd>
 		<bd>0</bd>
@@ -109,20 +141,47 @@
 		<coef>1.00</coef>
 	</query>
 </row>
-<row code='190100'>
+<row code='190110'>
 	<query>
 		<rozd>3</rozd>
 		<bd>0</bd>
 		<rd>1901</rd>
 		<pg></pg>
-		<coef>0.53</coef>
+		<coef>0.535</coef>
 	</query>
 	<query>
 		<rozd>3</rozd>
 		<bd>0</bd>
 		<rd>1905</rd>
 		<pg></pg>
-		<coef>0.53</coef>
+		<coef>0.535</coef>
+	</query>
+</row>
+<row code='110110'>
+	<!-- военный сбор -->
+	<query>
+		<rozd>1</rozd>
+		<bd>0</bd>
+		<rd>1101</rd>
+		<pg>10</pg>
+		<coef>1.00</coef>
+	</query>
+</row>
+<!--  Специальный фонд  -->
+<row code='190120'>
+	<query>
+		<rozd>3</rozd>
+		<bd>0</bd>
+		<rd>1901</rd>
+		<pg></pg>
+		<coef>0.115</coef>
+	</query>
+	<query>
+		<rozd>3</rozd>
+		<bd>0</bd>
+		<rd>1905</rd>
+		<pg></pg>
+		<coef>0.115</coef>
 	</query>
 </row>
 <row code='140107'>
@@ -348,14 +407,14 @@
 		<bd>0</bd>
 		<rd>1901</rd>
 		<pg></pg>
-		<coef>0.47</coef>
+		<coef>0.35</coef>
 	</query>
 	<query>
 		<rozd>3</rozd>
 		<bd>0</bd>
 		<rd>1905</rd>
 		<pg></pg>
-		<coef>0.47</coef>
+		<coef>0.35</coef>
 	</query>
 </row>
 <!-- Единый налог -->

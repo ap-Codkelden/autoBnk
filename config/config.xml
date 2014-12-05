@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding='UTF-8' ?>
 <config>
 	<path>
-		<path-bank>d:\Autobnk\in</path-bank>
-		<path-out>c:\tax\txt</path-out>
+		<path-bank>d:\Autobnk_dev\in</path-bank>
+		<path-out>d:\Autobnk_dev\out</path-out>
 	</path>
 	<treasury_files>
 		<file>
