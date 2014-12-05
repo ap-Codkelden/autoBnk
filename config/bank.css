@@ -1,31 +1,36 @@
 body {
-	font-family: monospace;
+	font-family: helvetica,monospace;
 	font-size: 12pt;
+	padding-left: 6em; 
 }
 
- .total {
- 	background-color:#FAFAD2;
+.total td {
  	border: 2px solid #000000;
  	font-weight: bolder;
  }
 
-.single {
-	border-bottom: 1px double;
+.single td {
+	border-bottom: 1px solid #000000;
 }
 
-.emphasis {
+.emphasis td {
 	font-weight: bold;
 }
 
- #dt {
+.italic td {
+	font-style: italic;
+}
+
+#dt {
  	font-weight: bolder;
- }
+}
 
 table {
 	font-family: inherit;
 	font-size: 12pt;
 	border: 2px solid black;
 	border-collapse: collapse;
+	width:100%;
 }
 
  td {
@@ -34,7 +39,6 @@ table {
 
  td.names {
  	text-align: left;
-	border: 2px single black;
  }
 
 td { 
