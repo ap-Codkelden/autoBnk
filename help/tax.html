@@ -1,0 +1,62 @@
+<html>
+<head>
+    <title>Описание файла tax.xml</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="autobnk.css">
+</head>
+<body>
+
+<h2>3. Описание файла tax.xml</h2>
+
+<p>Представляет собой файл формата XML с корневым элементом <code>&lt;tax&gt;</code> 
+со множеством дочерних элементов <code>&lt;row&gt;</code>, которые в свою очередь 
+содержат дочерние элементы <code>&lt;query&gt;</code> с параметрами запроса для 
+выборки.</p>
+
+<h3>3.1. Элемент &lt;row&gt;</h3>
+
+<p>Каждый элемент <code>&lt;row&gt;</code> соответствует строке выходной таблицы 
+с кодом <code>NNNNNN</code>, где <code>NNNNNN</code> соответствует 
+<a href="etalon.html#rowcode">коду строки</a> из файла <a href="etalon.html"><code>etalon.xml</code></a>.
+
+<pre>&lt;row code='190120'&gt;
+    &lt;query&gt;
+        &lt;rozd&gt;3&lt;/rozd&gt;
+        &lt;bd&gt;0&lt;/bd&gt;
+        &lt;rd&gt;1901&lt;/rd&gt;
+        &lt;pg&gt;&lt;/pg&gt;
+        &lt;coef&gt;0.334&lt;/coef&gt;
+    &lt;/query&gt;
+    &lt;query&gt;
+        &lt;rozd&gt;3&lt;/rozd&gt;
+        &lt;bd&gt;0&lt;/bd&gt;
+        &lt;rd&gt;1905&lt;/rd&gt;
+        &lt;pg&gt;&lt;/pg&gt;
+        &lt;coef&gt;0.334&lt;/coef&gt;
+    &lt;/query&gt;
+&lt;/row&gt;</pre>
+
+<p>Элемент &lt;row&gt; может содержать неограниченное количество элементов &lt;query&gt;. 
+Для каждой строки, определенной в <code>&lt;row&gt;</code> результат равен сумме 
+результатов дочерних элементов <code>&lt;query&gt;</code>.</p>
+
+<h3>3.2. Элемент &lt;query&gt;</h3>
+
+<p>Содержит следующие элементы:</p>
+
+<p><ul>
+    <li><code>rozd</code>&nbsp;&ndash; столбец <em>Раздел</em> из файла-отчёта 
+        казначейства. Может быть пустым, если необходима выборка из всех разделов;</li>
+    <li><code>bd</code>&nbsp;&ndash; вид бюджета: 0&nbsp;&ndash; государственный, 
+        1&nbsp;&ndash; местный;</li>
+    <li><code>rd</code>&nbsp;&ndash; раздел бюджетной классификации, 4 цифры;</li>
+    <li><code>pg</code>&nbsp;&ndash; параграф бюджетной классификации, 2 цифры. 
+        Может быть пустым, если необходима выборка по всем параграфам;</li>
+    <li><code>coef</code>&nbsp;&ndash; Коэффициент. Представляет собой рациональное 
+        число с двумя или более разрядами, причём в качестве разделителя выступает 
+        точка (<code>1.00</code>, <code>0.334</code>, <code>-2.35</code>). Может 
+        быть отрицательным, если необходимо обеспечить вычитание какой-либо 
+        суммы из общей суммы по строке.</li>
+</ul></p>
+
+</body></html>

@@ -1,0 +1,41 @@
+p, li {
+	font-family: Tahoma, Geneva, sans-serif;
+}
+
+li {
+	list-style: circle;
+}
+
+body {
+	background-color: white;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Lucida Grande', Arial, sans-serif;
+    background-color: white;
+    font-weight: normal;
+    color: #1a1a1a;
+    margin: 20px -20px 10px -20px;
+    padding: 3px 0 3px 10px;
+}
+
+h1 { margin-top: 0; font-size: 200%; }
+h2 { font-size: 160%; }
+h3 { font-size: 140%; }
+h4 { font-size: 120%; }
+h5 { font-size: 110%; }
+h6 { font-size: 100%; }
+
+:not(a code), pre {
+	font-family: 'Courier New', monospace;
+	white-space: pre-wrap;
+	color: #084b8a;
+}
+
+pre {
+	margin-left: 4ex;
+}
+
+.example {
+	font-weight: bolder;
+}

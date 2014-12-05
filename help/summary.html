@@ -1,0 +1,78 @@
+<html>
+<head>
+    <title>Описание файла summary.xml</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="autobnk.css">
+</head>
+<body>
+    
+<h2>1. Описание файла summary.xml</h2>
+
+<p>Представляет собой файл формата XML с корневым элементом <code>&lt;summary&gt;</code> 
+и содержит информацию, необходимую для формирования итогов в выходном файле и применении форматирования.</p>
+
+<h3>1.1. Раздел &lt;sums&gt;</h3>
+ 
+<p>В подразделах <code>&lt;sum&gt;</code> содержит информацию о строках, которые должны быть 
+суммированы <code>&lt;lines&gt;</code>, название этой строки <code>&lt;desc&gt;</code> 
+и именах переменных <code>&lt;varname&gt;</code>, в которые будет записана сумма.</p>
+
+<pre>&lt;sums&gt;
+    &lt;sum&gt;
+        &lt;varname&gt;db&lt;/varname&gt;
+        &lt;lines&gt;1, 2, 3, &hellip;, 12, 13&lt;/lines&gt;
+        &lt;desc&gt;ДЕРЖАВНИЙ БЮДЖЕТ&lt;/desc&gt;
+    &lt;/sum&gt;
+&lt;/sums&gt;</pre>
+
+<h4>1.1.1. Имена переменных</h4>
+
+<ul>
+    <li><code>db</code>&nbsp;&ndash; государственный бюджет</li>
+    <li><code>mb</code>&nbsp;&ndash; местный бюджет</li>
+    <li><code>zu</code>&nbsp;&ndash; земля юридических лиц</li>
+    <li><code>zf</code>&nbsp;&ndash; земля физических лиц</li>
+    <li><code>ed</code>&nbsp;&ndash; единый налог</li>
+</ul>
+
+
+<h3>1.2. Раздел &lt;inserts&gt;</h3>
+
+<p>В подразделах <code>&lt;insert&gt;</code> содержит информацию о номерах строк 
+<code>&lt;line&gt;</code>, <em>после</em> которых будут вставлены строки итогов, 
+и имена переменных <code>&lt;varname&gt;</code>, содержащие итоговые данные, 
+сгенерированные по данным раздела <code>&lt;sums&gt;</code>.
+
+<pre>&lt;inserts&gt;
+    &lt;insert&gt;
+        &lt;line&gt;12&lt;/line&gt;
+        &lt;varname&gt;db&lt;/varname&gt;
+    &lt;/insert&gt;
+&lt;inserts&gt;</pre>
+
+<h3>1.3. Раздел &lt;divs&gt;</h3>
+
+<p>В подразделах <code>&lt;singleline&gt;</code>, <code>&lt;doubleline&gt;</code> и 
+<code>&lt;emphline&gt;</code> содержит информацию о номерах строк, к которым должно быть 
+применено смысловое выделение (разбивка таблицы на секции или полужирное 
+выделение итоговых строк). Добавленные программным путем итоговые строки учитываются, 
+за исключением строк <span class="example">&laquo;ДЕРЖАВНИЙ БЮДЖЕТ&raquo;</span> и 
+<span class="example">&laquo;МІСЦЕВИЙ БЮДЖЕТ&raquo;</span></p>
+
+<pre>&lt;divs&gt;
+    &lt;singleline&gt;11,17,23,30&lt;/singleline&gt;
+    &lt;doubleline&gt;14,38&lt;/doubleline&gt;
+    &lt;emphline&gt;18,21,33&lt;/emphline&gt;
+&lt;/divs&gt;</pre>
+
+<ul>
+    <li><code>&lt;singleline&gt;</code>&nbsp;&mdash; тонкая линия после строки;</li>
+    <li><code>&lt;doubleline&gt;</code>&nbsp;&mdash; строки суммированных итогов 
+        (по умолчанию&nbsp;&mdash; полужирный текст с толстой внешней границей), 
+        как <span class="example">&laquo;ДЕРЖАВНИЙ БЮДЖЕТ&raquo;</span>;</li>
+    <li><code>&lt;emphline&gt;</code>&nbsp;&mdash; строки внутренних итогов (по 
+        умолчанию&nbsp;&mdash; полужирный текст без внешней границы), как 
+        <span class="example">&laquo;ЗЕМЛЯ ЮР. ОСОБИ&raquo;</span>.</li>
+</li>
+</ul>
+</p></body></html>

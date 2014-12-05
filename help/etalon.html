@@ -1,0 +1,33 @@
+<html>
+<head>
+    <title>Описание файла etalon.xml</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="autobnk.css">
+</head>
+<body>
+    
+<h2><a name="etalon"></a>2. Описание файла etalon.xml</h2>
+
+<p>Представляет собой файл формата XML с корневым элементом <code>&lt;table&gt;</code> 
+со множеством дочерних элементов <code>&lt;row&gt;</code> и содержит информацию 
+о наименовании строк таблицы и порядке их размещения.</p>
+
+<pre>&lt;table&gt;
+    &lt;row&gt;
+        &lt;code&gt;140100&lt;code&gt;
+        &lt;name&gt;ПДВ&lt;name&gt;
+        &lt;nompp&gt;1&lt;nompp&gt;
+    &lt;row&gt;
+&lt;/table&gt;</pre>
+
+<p><ul>
+    <li><a name="rowcode"><code>code</code></a>&nbsp;&ndash; код строки. Обычно состоит из 6 цифр, первые 4&nbsp;&ndash; код налога в соответствии с бюджетной классификацией, две 
+    последние&nbsp;&ndash; выбираются произвольно и должны быть уникальными 
+    в пределах одного платежа (пример&nbsp;&mdash; коды строк платы за землю 
+    <code>130501</code>, <code>130502</code>&hellip;);</li>
+    <li><code>name</code>&nbsp;&ndash; название платежа, отображаемое в строке;</li>
+    <li><code>nompp</code>&nbsp;&ndash; порядковый номер строки.</li>
+</ul></p>
+
+
+</body></html>
