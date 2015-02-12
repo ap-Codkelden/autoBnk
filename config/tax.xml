@@ -2,212 +2,201 @@
 <tax>
 	<row code='140100'>
 		<query>
-			<rozd></rozd> 
+			<rozd>1</rozd> 
 			<bd>0</bd> 
 			<rd>1401</rd> 
-			<pg>01</pg> 
-			<coef>1.00</coef> 
+			<pg>01</pg>
+			<coef>1.00</coef>
 		</query>
 	</row>
 	<row code='110200'>
-	<query>
-		<rozd></rozd> 
-		<bd>0</bd> 
-		<rd>1102</rd> 
-		<pg></pg> 
-		<coef>1.00</coef> 
-	</query>
+		<query>
+			<rozd>3</rozd> 
+			<bd>0</bd> 
+			<rd>1102</rd> 
+			<pg></pg> 
+			<coef>0.90</coef> 
+		</query>
 	</row>
 	<row code='110230'>
-		<query>
-			<rozd>1</rozd> 
-			<bd>0</bd> 
-			<rd>1102</rd> 
-			<pg>31</pg> 
-			<coef>1.00</coef> 
-		</query>
-		<query>
-			<rozd>1</rozd> 
-			<bd>0</bd> 
-			<rd>1102</rd> 
-			<pg>33</pg> 
-			<coef>1.00</coef> 
-		</query>
-		<query>
-			<rozd>1</rozd> 
-			<bd>0</bd> 
-			<rd>1102</rd> 
-			<pg>40</pg> 
-			<coef>1.00</coef> 
-		</query>
-		<query>
-			<rozd>1</rozd> 
-			<bd>0</bd> 
-			<rd>1102</rd> 
-			<pg>45</pg> 
-			<coef>1.00</coef> 
-		</query>
+			<query>
+				<rozd>3</rozd> 
+				<bd>0</bd> 
+				<rd>1102</rd> 
+				<pg>31</pg> 
+				<coef>0.90</coef> 
+			</query>
+			<query>
+				<rozd>3</rozd> 
+				<bd>0</bd> 
+				<rd>1102</rd> 
+				<pg>33</pg> 
+				<coef>0.90</coef> 
+			</query>
+			<query>
+				<rozd>3</rozd> 
+				<bd>0</bd> 
+				<rd>1102</rd> 
+				<pg>40</pg> 
+				<coef>0.90</coef> 
+			</query>
+			<query>
+				<rozd>3</rozd> 
+				<bd>0</bd> 
+				<rd>1102</rd> 
+				<pg>45</pg> 
+				<coef>0.90</coef> 
+			</query>
 	</row>
 	<row code='210100'>
-	<query>
-		<rozd></rozd>
-		<bd>0</bd>
-		<rd>2101</rd>
-		<pg></pg>
-		<coef>1.00</coef>
-	</query>
+		<query>
+			<rozd>1</rozd>
+			<bd>0</bd>
+			<rd>2101</rd>
+			<pg></pg>
+			<coef>1.00</coef>
+		</query>
 	</row>
 	<row code='130200'>
-	<query>
-		<rozd>3</rozd>
-		<bd>0</bd>
-		<rd>1302</rd>
-		<pg></pg>
-		<coef>0.50</coef>
-	</query>
+		<query>
+			<rozd>3</rozd>
+			<bd>0</bd>
+			<rd>1302</rd>
+			<pg></pg>
+			<coef>0.50</coef>
+		</query>
 	</row>
 	<row code='130300'>
-	<query>
-		<rozd>1</rozd>
-		<bd>0</bd>
-		<rd>1303</rd>
-		<pg>01</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='210810'>
-	<query>
-		<rozd></rozd>
-		<bd>0</bd>
-		<rd>2108</rd>
-		<pg>10</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='310100'>
-	<query>
-		<rozd></rozd>
-		<bd>0</bd>
-		<rd>3101</rd>
-		<pg></pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='190700'>
-	<query>
-		<rozd></rozd>
-		<bd>0</bd>
-		<rd>1907</rd>
-		<pg></pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='240613'>
-	<query>
-		<rozd></rozd>
-		<bd>0</bd>
-		<rd>2108</rd>
-		<pg>09</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd></rozd>
-		<bd>0</bd>
-		<rd>2108</rd>
-		<pg>11</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd></rozd>
-		<bd>0</bd>
-		<rd>2406</rd>
-		<pg>03</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd>1</rozd>
-		<bd>0</bd>
-		<rd>1909</rd>
-		<pg></pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='190600'>
-	<query>
-		<rozd></rozd>
-		<bd>0</bd>
-		<rd>1906</rd>
-		<pg></pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='190110'>
-	<query>
-		<rozd>3</rozd>
-		<bd>0</bd>
-		<rd>1901</rd>
-		<pg></pg>
-		<coef>0.535</coef>
-	</query>
-	<query>
-		<rozd>3</rozd>
-		<bd>0</bd>
-		<rd>1905</rd>
-		<pg></pg>
-		<coef>0.535</coef>
-	</query>
-</row>
-<row code='110110'>
-	<!-- военный сбор -->
-	<query>
-		<rozd>1</rozd>
-		<bd>0</bd>
-		<rd>1101</rd>
-		<pg>10</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<!--  Специальный фонд  -->
-<row code='190120'>
-	<query>
-		<rozd>3</rozd>
-		<bd>0</bd>
-		<rd>1901</rd>
-		<pg></pg>
-		<coef>0.115</coef>
-	</query>
-	<query>
-		<rozd>3</rozd>
-		<bd>0</bd>
-		<rd>1905</rd>
-		<pg></pg>
-		<coef>0.115</coef>
-	</query>
-</row>
-<row code='140107'>
-	<query>
-		<rozd></rozd>
-		<bd>0</bd>
-		<rd>1401</rd>
-		<pg>07</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<!--  МБ  -->
-	<row code='110100'>
 		<query>
-			<rozd>4</rozd> 
-			<bd>1</bd> 
-			<rd>1101</rd> 
-			<pg></pg> 
-			<coef>1.00</coef> 
+			<rozd>3</rozd>
+			<bd>0</bd>
+			<rd>1303</rd>
+			<pg>01</pg>
+			<coef>0.75</coef>
+		</query>
+	</row>
+	<row code='210810'>
+		<query>
+			<rozd></rozd>
+			<bd>0</bd>
+			<rd>2108</rd>
+			<pg>10</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='310100'>
+		<query>
+			<rozd></rozd>
+			<bd>0</bd>
+			<rd>3101</rd>
+			<pg></pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='130600'>
+		<query>
+			<rozd>1</rozd>
+			<bd>0</bd>
+			<rd>1306</rd>
+			<pg></pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='140200'>
+		<query>
+			<rozd>1</rozd>
+			<bd>0</bd>
+			<rd>1402</rd>
+			<pg>08</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='240613'>
+		<query>
+			<rozd></rozd>
+			<bd>0</bd>
+			<rd>2108</rd>
+			<pg>09</pg>
+			<coef>1.00</coef>
 		</query>
 		<query>
-			<rozd>5</rozd> 
-			<bd>1</bd> 
+			<rozd></rozd>
+			<bd>0</bd>
+			<rd>2108</rd>
+			<pg>11</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd></rozd>
+			<bd>0</bd>
+			<rd>2406</rd>
+			<pg>03</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd>1</rozd>
+			<bd>0</bd>
+			<rd>1909</rd>
+			<pg></pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='190600'>
+		<query>
+			<rozd>1</rozd>
+			<bd>0</bd>
+			<rd>1906</rd>
+			<pg></pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='190110'>
+		<query>
+			<rozd>3</rozd>
+			<bd>0</bd>
+			<rd>1901</rd>
+			<pg></pg>
+			<coef>0.20</coef>
+		</query>
+	</row>
+	<row code='110110'>
+		<!-- военный сбор -->
+		<query>
+			<rozd>1</rozd>
+			<bd>0</bd>
+			<rd>1101</rd>
+			<pg>10</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='110130'>
+		<!-- НДФЛ -->
+		<query>
+			<rozd>3</rozd>
+			<bd>0</bd>
+			<rd>1101</rd>
+			<pg></pg>
+			<coef>0.25</coef>
+		</query>
+	</row>
+	<row code='110108'>
+		<!-- НДФЛ в виде % -->
+		<query>
+			<rozd>3</rozd>
+			<bd>0</bd>
+			<rd>1101</rd>
+			<pg>08</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<!--  МБ  -->
+	<row code='110100'>
+		<query>
+			<rozd>3</rozd> 
+			<bd>0</bd> 
 			<rd>1101</rd> 
-			<pg>06</pg> 
-			<coef>0.90</coef> 
+			<pg></pg> 
+			<coef>0.75</coef> 
 		</query>
 	</row>
 	<row code='130102'>
@@ -219,289 +208,274 @@
 			<coef>1.00</coef> 
 		</query>
 	</row>
-<row code='190401'>
-	<!-- Фіксований сільськогосподарський податок -->
-	<query>
-		<rozd></rozd>
-		<bd>1</bd>
-		<rd>1904</rd>
-		<pg>01</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='130501'><!-- зю з -->
-	<query>
-		<rozd>4</rozd>
-		<bd>1</bd>
-		<rd>1305</rd>
-		<pg>01</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='130502'><!--зю ор-->
-	<query>
-		<rozd>4</rozd>
-		<bd>1</bd>
-		<rd>1305</rd>
-		<pg>02</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='130503'><!--зю ор-->
-	<query>
-		<rozd>4</rozd>
-		<bd>1</bd>
-		<rd>1305</rd>
-		<pg>03</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='130505'><!--зю ор-->
-	<query>
-		<rozd>4</rozd>
-		<bd>1</bd>
-		<rd>1305</rd>
-		<pg>05</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='110202'>
-	<query>
-		<rozd>4</rozd>
-		<bd>1</bd>
-		<rd>1102</rd>
-		<pg>02</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd>4</rozd>
-		<bd>1</bd>
-		<rd>1102</rd>
-		<pg>32</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd>5</rozd>
-		<bd>1</bd>
-		<rd>1102</rd>
-		<pg>01</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='180415'>
-	<query>
-		<rozd>4</rozd>
-		<bd>1</bd>
-		<rd>1804</rd>
-		<pg>15</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='180400'>
-	<query>
-		<rozd>1</rozd>
-		<bd>1</bd>
-		<rd>1804</rd>
-		<pg></pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='130299'>
-	<query>
-		<rozd>3</rozd>
-		<bd>0</bd>
-		<rd>1302</rd>
-		<pg></pg>
-		<coef>0.50</coef>
-	</query>
-	<query>
-		<rozd>1</rozd>
-		<bd>1</bd>
-		<rd>1302</rd>
-		<pg></pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='130399'>
-	<query>
-		<rozd>1</rozd>
-		<bd>0</bd>
-		<rd>1303</rd>
-		<pg>01</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd>1</rozd>
-		<bd>1</bd>
-		<rd>1303</rd>
-		<pg>02</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='220100'>
-	<query>
-		<rozd></rozd>
-		<bd>1</bd>
-		<rd>2201</rd>
-		<pg>11</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='310199'>
-	<query>
-		<rozd></rozd>
-		<bd>1</bd>
-		<rd>3101</rd>
-		<pg></pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<!-- ІНШІ МІСЦЕВІ -->
-<row code='240600'>
-	<query>
-		<rozd></rozd>
-		<bd>1</bd>
-		<rd>2101</rd>
-		<pg>03</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd></rozd>
-		<bd>1</bd>
-		<rd>2108</rd>
-		<pg>09</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd></rozd>
-		<bd>1</bd>
-		<rd>2108</rd>
-		<pg>11</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd></rozd>
-		<bd>1</bd>
-		<rd>2108</rd>
-		<pg>14</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd></rozd>
-		<bd>1</bd>
-		<rd>2406</rd>
-		<pg>03</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd></rozd>
-		<bd>1</bd>
-		<rd>1601</rd>
-		<pg></pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='190199'>
-	<query>
-		<rozd>3</rozd>
-		<bd>0</bd>
-		<rd>1901</rd>
-		<pg></pg>
-		<coef>0.35</coef>
-	</query>
-	<query>
-		<rozd>3</rozd>
-		<bd>0</bd>
-		<rd>1905</rd>
-		<pg></pg>
-		<coef>0.35</coef>
-	</query>
-</row>
-<!-- Единый налог -->
-<!-- Криворожский район -->
-<row code='180501'>
-	<query>
-		<rozd>5</rozd>
-		<bd>1</bd>
-		<rd>1805</rd>
-		<pg>01</pg>
-		<coef>0.43</coef>
-	</query>
-	<query>
-		<rozd>2</rozd>
-		<bd>1</bd>
-		<rd>1805</rd>
-		<pg>03</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd>4</rozd>
-		<bd>1</bd>
-		<rd>1805</rd>
-		<pg>03</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='180502'><!-- ед ф л -->
-	<query>
-		<rozd>5</rozd>
-		<bd>1</bd>
-		<rd>1805</rd>
-		<pg>02</pg>
-		<coef>0.43</coef>
-	</query>
-	<query>
-		<rozd>2</rozd>
-		<bd>1</bd>
-		<rd>1805</rd>
-		<pg>04</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd>4</rozd>
-		<bd>1</bd>
-		<rd>1805</rd>
-		<pg>04</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='120200'>
-	<query>
-		<rozd>4</rozd>
-		<bd>1</bd>
-		<rd>1202</rd>
-		<pg>01</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd>4</rozd>
-		<bd>1</bd>
-		<rd>1202</rd>
-		<pg>02</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd>4</rozd>
-		<bd>1</bd>
-		<rd>1203</rd>
-		<pg>01</pg>
-		<coef>1.00</coef>
-	</query>
-	<query>
-		<rozd>4</rozd>
-		<bd>1</bd>
-		<rd>1203</rd>
-		<pg>02</pg>
-		<coef>1.00</coef>
-	</query>
-</row>
-<row code='180100'>
-	<query>
-		<rozd>2</rozd>
-		<bd>1</bd>
-		<rd>1801</rd>
-		<pg></pg>
-		<coef>1.00</coef>
-	</query>
-</row>
+	<row code='190401'>
+		<!-- Фіксований сільськогосподарський податок -->
+		<query>
+			<rozd></rozd>
+			<bd>1</bd>
+			<rd>1904</rd>
+			<pg>01</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='180105'><!-- зю з -->
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1801</rd>
+			<pg>05</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='180106'><!--зю ор-->
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1801</rd>
+			<pg>06</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='180107'><!--зю ор-->
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1801</rd>
+			<pg>07</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='180109'><!--зю ор-->
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1801</rd>
+			<pg>09</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='110202'>
+		<query>
+			<rozd>3</rozd>
+			<bd>0</bd>
+			<rd>1102</rd>
+			<pg></pg>
+			<coef>0.10</coef>
+		</query>
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1102</rd>
+			<pg>32</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1102</rd>
+			<pg>02</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='180400'>
+		<query>
+			<rozd>1</rozd>
+			<bd>1</bd>
+			<rd>1804</rd>
+			<pg></pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1804</rd>
+			<pg>15</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<!--0418-->
+			<rozd>2</rozd>
+			<bd>1</bd>
+			<rd>1804</rd>
+			<pg>15</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='130299'>
+		<query>
+			<rozd>3</rozd>
+			<bd>0</bd>
+			<rd>1302</rd>
+			<pg></pg>
+			<coef>0.50</coef>
+		</query>
+	</row>
+	<row code='130399'>
+		<query>
+			<rozd>3</rozd>
+			<bd>0</bd>
+			<rd>1303</rd>
+			<pg>01</pg>
+			<coef>0.25</coef>
+		</query>
+	</row>
+	<row code='140400'>
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1404</rd>
+			<pg></pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='220100'>
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>2201</rd>
+			<pg>11</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<!-- Единый налог -->
+	<!-- Криворожский район -->
+	<row code='180501'>
+		<query>
+			<rozd>5</rozd>
+			<bd>1</bd>
+			<rd>1805</rd>
+			<pg>01</pg>
+			<coef>0.43</coef>
+		</query>
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1805</rd>
+			<pg>03</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd>1</rozd>
+			<bd>1</bd>
+			<rd>1805</rd>
+			<pg>03</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='180502'>
+		<query>
+			<rozd>5</rozd>
+			<bd>1</bd>
+			<rd>1805</rd>
+			<pg>02</pg>
+			<coef>0.43</coef>
+		</query>
+		<query>
+			<rozd>1</rozd>
+			<bd>1</bd>
+			<rd>1805</rd>
+			<pg>04</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1805</rd>
+			<pg>04</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code='180100'>
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1801</rd>
+			<pg>01</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1801</rd>
+			<pg>02</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1801</rd>
+			<pg>03</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1801</rd>
+			<pg>04</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+	<row code="310199">
+		<query>
+			<rozd/> 
+			<bd>1</bd> 
+			<rd>3101</rd> 
+			<pg/> 
+			<coef>1.00</coef> 
+		</query>
+	</row>
+	<row code="190199">
+		<query>
+			<rozd>3</rozd> 
+			<bd>0</bd> 
+			<rd>1901</rd> 
+			<pg></pg> 
+			<coef>0.80</coef> 
+		</query>
+	</row>
+	<!-- ІНШІ МІСЦЕВІ -->
+	<row code='240600'>
+		<query>
+			<rozd></rozd>
+			<bd>1</bd>
+			<rd>2101</rd>
+			<pg>03</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd></rozd>
+			<bd>1</bd>
+			<rd>2108</rd>
+			<pg>09</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd></rozd>
+			<bd>1</bd>
+			<rd>2108</rd>
+			<pg>11</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd></rozd>
+			<bd>1</bd>
+			<rd>2108</rd>
+			<pg>14</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd></rozd>
+			<bd>1</bd>
+			<rd>2406</rd>
+			<pg>03</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd></rozd>
+			<bd>1</bd>
+			<rd>1601</rd>
+			<pg></pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
 </tax>

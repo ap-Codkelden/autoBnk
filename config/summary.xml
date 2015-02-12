@@ -4,13 +4,13 @@
 		<sum>
 			<!-- Сумма госбюджет -->
 			<varname>db</varname>
-			<lines>1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14</lines>
+			<lines>1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15</lines>
 			<desc>ДЕРЖАВНИЙ БЮДЖЕТ</desc>
 		</sum>
 		<sum>
 			<!-- Сумма местный бюджет -->
 			<varname>mb</varname>
-			<lines>15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35</lines>
+			<lines>16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34</lines>
 			<desc>МІСЦЕВИЙ БЮДЖЕТ</desc>
 		</sum>
 		<sum>
@@ -28,7 +28,7 @@
 		<sum>
 			<!-- Ед. налог -->
 			<varname>ed</varname>
-			<lines>32, 33</lines>
+			<lines>29, 30</lines>
 			<desc>ЄДИНИЙ ПОДАТОК</desc>
 		</sum>
 	</sums>
@@ -46,19 +46,20 @@
 			<varname>zf</varname>
 		</insert>
 		<insert>
-			<line>30</line>
+			<line>27</line>
 			<varname>ed</varname>
 		</insert>
 		<insert>
-			<line>34</line>
+			<line>33</line>
 			<varname>mb</varname>
 		</insert>
 	</inserts>
 	<divs>
-		<singleline>13,19,25,32</singleline>
-		<doubleline>16,40</doubleline>
+		<!-- линии ставятся после -->
+		<singleline>19,25,31,34</singleline>
+		<doubleline>16,39</doubleline>
 		<!-- emphline - полужирный -->
-		<emphline>20,23,35</emphline>
-		<italic>3</italic>
+		<emphline>20,23,32</emphline>
+		<italic>14</italic>
 	</divs>
 </summary>
