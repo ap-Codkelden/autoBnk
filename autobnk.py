@@ -322,7 +322,7 @@ class DBProcessing:
 					params = []
 					# <rozd> <bd> <rd> <pg> <coef>
 					for c in query:
-						params.append(c if c == None else c.text) 
+						params.append(c if c is None else c.text) 
 					self.SQLConstruct(row.attrib['code'],params)
 		except FileNotFoundError as e:
 			print("Отсутствует конфигурационный файл %s.\nДо свидания." % (e.filename))
