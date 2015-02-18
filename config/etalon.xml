@@ -11,6 +11,11 @@
 		<nompp>2</nompp>
 	</row>
 	<row>
+		<code>110230</code>
+		<name>в тому числі аванси</name>
+		<nompp>3</nompp>
+	</row>
+	<row>
 		<code>210100</code>
 		<name>Частина чистого прибутку</name>
 		<nompp>3</nompp>		
@@ -113,6 +118,11 @@
 	<row>
 		<code>110202</code>
 		<name>Податок на прибуток</name>
+		<nompp>23</nompp>
+	</row>
+	<row>
+		<code>110239</code>
+		<name>в т. ч. прибуток комун.</name>
 		<nompp>23</nompp>
 	</row>
 	<row>

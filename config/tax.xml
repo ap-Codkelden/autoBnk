@@ -47,6 +47,55 @@
 				<pg>45</pg> 
 				<coef>0.90</coef> 
 			</query>
+			<query>
+				<rozd>3</rozd> 
+				<bd>0</bd> 
+				<rd>1102</rd> 
+				<pg>46</pg> 
+				<coef>0.90</coef> 
+			</query>
+			<query>
+				<rozd>3</rozd> 
+				<bd>0</bd> 
+				<rd>1102</rd> 
+				<pg>41</pg> 
+				<coef>0.90</coef> 
+			</query>
+			<query>
+				<rozd>3</rozd> 
+				<bd>0</bd> 
+				<rd>1102</rd> 
+				<pg>39</pg> 
+				<coef>0.90</coef> 
+			</query>
+			<query>
+				<rozd>3</rozd> 
+				<bd>0</bd> 
+				<rd>1102</rd> 
+				<pg>37</pg> 
+				<coef>0.90</coef> 
+			</query>
+			<query>
+				<rozd>3</rozd> 
+				<bd>0</bd> 
+				<rd>1102</rd> 
+				<pg>36</pg> 
+				<coef>0.90</coef> 
+			</query>
+			<query>
+				<rozd>3</rozd> 
+				<bd>0</bd> 
+				<rd>1102</rd> 
+				<pg>35</pg> 
+				<coef>0.90</coef> 
+			</query>
+			<query>
+				<rozd>3</rozd> 
+				<bd>0</bd> 
+				<rd>1102</rd> 
+				<pg>34</pg> 
+				<coef>0.90</coef> 
+			</query>
 	</row>
 	<row code='210100'>
 		<query>
@@ -262,6 +311,23 @@
 			<pg></pg>
 			<coef>0.10</coef>
 		</query>
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1102</rd>
+			<pg>32</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1102</rd>
+			<pg>02</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
+
+	<row code='110239'>
 		<query>
 			<rozd>4</rozd>
 			<bd>1</bd>

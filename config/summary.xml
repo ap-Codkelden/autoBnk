@@ -34,32 +34,32 @@
 	</sums>
 	<inserts>
 		<insert>
-			<line>14</line>
+			<line>15</line>
 			<varname>db</varname>
 		</insert>
 		<insert>
-			<line>17</line>
+			<line>18</line>
 			<varname>zu</varname>
 		</insert>
 		<insert>
-			<line>19</line>
+			<line>20</line>
 			<varname>zf</varname>
 		</insert>
 		<insert>
-			<line>27</line>
+			<line>29</line>
 			<varname>ed</varname>
 		</insert>
 		<insert>
-			<line>33</line>
+			<line>35</line>
 			<varname>mb</varname>
 		</insert>
 	</inserts>
 	<divs>
 		<!-- линии ставятся после -->
-		<singleline>19,25,31,34</singleline>
-		<doubleline>16,39</doubleline>
+		<singleline>20,26,33,36</singleline>
+		<doubleline>17,41</doubleline>
 		<!-- emphline - полужирный -->
-		<emphline>20,23,32</emphline>
-		<italic>14</italic>
+		<emphline>21,24,34</emphline>
+		<italic>3,15,28</italic>
 	</divs>
 </summary>
