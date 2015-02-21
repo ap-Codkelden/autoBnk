@@ -1,6 +1,6 @@
 """ 
-AutoBnk4  
-version 4.6.0
+AutoBnk
+version 4.1.3
 
   The MIT License (MIT)
   Copyright (c) 2008 - 2015 Renat Nasridinov, <mavladi@gmail.com>
@@ -29,7 +29,8 @@ import argparse
 import math
 import sqlite3
 import sys
-import xml.etree.ElementTree as ET 
+import xml.etree.ElementTree as ET
+import json
 import webbrowser
 from datetime import date
 import os.path
