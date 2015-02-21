@@ -354,13 +354,19 @@ class WriteFile():
         except FileNotFoundError:
             print("ПРЕДУПРЕЖДЕНИЕ: Файл `bank.css` не найден. Таблица будет неотформатирована.")
 
-    def ComposeFileName(self, extension):
+    def ComposeFileName(self, extension, temp=False):
         """ Формирование имени выходного файла
         принимает расширение extension БЕЗ ТОЧКИ и возвращает 'bankMMDD.ext' с 
         учётом пути сохранения, определенного в config.xml
-        """
-        return ''.join((out_directory,os.sep,'bank',self.dt.BankDate(fn)[3:5],\
-            self.dt.BankDate(fn)[:2],'.', extension))
+        Параметр temp определяет, вызвана ли функция для возврата временного 
+        имени файла в случае, если файл занят (см. процедуру WriteFile)."""
+        if not temp:
+            filename = ''.join([
+                    'bank',self.dt.BankDate(fn)[3:5], self.dt.BankDate(fn)[:2]
+                ])
+        else:
+            filename = 'temp'
+        return ''.join((out_directory,os.sep,filename,'.', extension))
 
     def GetDelimitersPosition(self):
         """ Возвращает кортеж из списков (single_ln, double_ln, emph_ln)
@@ -416,10 +422,20 @@ class WriteFile():
         return ''.join([__header,__page_body,HTML_BLOCK_END])
 
     def WriteFile(self, content):
-        fn = self.ComposeFileName('html')
-        with open(fn, 'w') as f:
-            f.write(content)
-        return fn
+        try:
+            fn = self.ComposeFileName('html')
+            with open(fn, 'w') as f:
+                f.write(content)
+            return fn
+        except PermissionError:
+            sys.stdout.write("\nФайл занят и будет сохранен под именем 'tmp.html'")
+            fn = self.ComposeFileName('html',temp=True)
+            with open(fn, 'w') as f:
+                f.write(content)
+        finally:
+            return fn
+
+
 
     def WriteXML(self, rows):
         """ Просто сохранение строк в XML-файл """
