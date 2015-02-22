@@ -131,6 +131,7 @@ class Writer:
             ai2 = 0 if i[2] == None else i[2]
             ai3 = 0 if i[3] == None else i[3]
             self.a.append([i[0],ai1,ai2,ai1+ai2,ai3,ai1+ai2+ai3])
+            print(self.a)
 
     def GetList(self):
         return self.a
@@ -257,7 +258,7 @@ class DBProcessing:
                             bank_sum s \
                             on e.code = s.code\
                             ORDER BY nompp")
-        return (self.db_cur.fetchall())
+        return self.db_cur.fetchall()
 
     def MakeEtalon(self):
         try:
@@ -370,22 +371,23 @@ class WriteFile():
         return ''.join((out_directory,os.sep,filename,'.', extension))
 
     def GetDelimitersPosition(self):
-        """ Возвращает кортеж из списков (single_ln, double_ln, emph_ln)
-        В первом списке single_ln -- номера строк, после которых вставляется 
-        просто линия (начиная с версии 4.5 -- оставлена как резерв), во втором 
-        double_ln -- номера строк, после которых следует строка, которую нужно
-        выделить, в emph_ln -- строки, в которых тоже будет выделение (земля, 
-        единый).
-        Эти данные хранятся в переменных раздела <divs> singleline, doubleline и
-        emphline соответственно (файл summary.xml)
+        """ Возвращает кортеж из списков (single_ln, double_ln, emph_ln, 
+        italic_ln), содержащих номера строк, после которых применяются эффекты:
+        Список      Эффект                  класс CSS       
+        single_ln   одинарная линия         single
+        double_ln   полужирный с  рамкой    total
+        emph_ln     полужирный              emphasis
+        italic_ln   курсив                  italic
+        Эти данные хранятся в переменных раздела <divs> singleline, doubleline, 
+        italic и emphline соответственно файла summary.xml
         """
+        def Position(xpath):
+            return tuple(map(int,summary.find(xpath).text.split(',')))
+
         summary = GetSummaryData()
-        single_ln=list(map(int,summary.find('divs/singleline').text.split(',')))
-        double_ln=list(map(int,summary.find('divs/doubleline').text.split(',')))
-        emph_ln=list(map(int,summary.find('divs/emphline').text.split(',')))
-        italic_ln=list(map(int,summary.find('divs/italic').text.split(',')))
-        #return (single_ln, double_ln, emph_ln)
-        return (single_ln, double_ln, emph_ln, italic_ln)
+        new_list = map(Position,
+                ['divs/singleline','divs/doubleline','divs/emphline','divs/italic'])
+        return tuple(new_list)
 
     def MakeHTML(self, rows):
         """ Компонует страницу html.
@@ -398,6 +400,7 @@ class WriteFile():
         """
         hrn = lambda x: math.ceil(x/100) if ((x/100) % 1) > 0.51 else math.floor(x/100)
         __delims = self.GetDelimitersPosition()
+        print('__delims',__delims)
         __counter = 0
         __page_body = ''
         for r in rows:
@@ -416,6 +419,7 @@ class WriteFile():
             else:
                 css = ''
             __page_body=__page_body + "<tr{0}><td class='names'>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>".format(css,r[0],hrn(r[1]),hrn(r[2]),hrn(r[3]),hrn(r[4]),hrn(r[5]))
+            #__page_body=''.join(["<tr{0}><td class='names'>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>".format(css,r[0],hrn(r[1]),hrn(r[2]),hrn(r[3]),hrn(r[4]),hrn(r[5]))])
             __counter+=1
         # __header просто синтаксический сахар 
         __header = HTML_BLOCK_START.format(self.GetCSS(),self.dt.CurrentDate(), \
@@ -483,6 +487,29 @@ def ParseFile(tr_dir, tr_f):
     # (расширение файла)
     base.FillTable(tr_val, tr_f[-3:])
 
+
+def ReadJSONConfig():
+    """наполняет кортеж для расширений файлов казны tr_ext кодами территорий 
+    казначейств из config.json"""
+    try:
+        config_path = 'config\\config.json'
+        if os.path.exists('config\\config.json'):
+            treasury_conf = ET.parse('config\\config.xml')
+            tr = treasury_conf.getroot()
+            if not os.path.exists(tr[0][1].text):
+                os.makedirs(tr[0][1].text)
+            for tr_code in tr.iter('code'):
+                tr_ext.append(tr_code.text)
+            for item in tr.iter('file'):
+                raj_dict[item[1].text]=item[2].text
+            return tr[0][0].text, tr[0][1].text
+        else:
+            raise ConfigFileNotFoundError
+    except ConfigFileNotFoundError as e:
+        print(e.message)
+        sys.exit()
+
+
 def ReadConfig():
     """наполняет кортеж для расширений файлов казны tr_ext кодами территорий 
     казначейств из config.xml"""
@@ -496,7 +523,7 @@ def ReadConfig():
                 tr_ext.append(tr_code.text)
             for item in tr.iter('file'):
                 raj_dict[item[1].text]=item[2].text
-            return (tr[0][0].text, tr[0][1].text)
+            return tr[0][0].text, tr[0][1].text
         else:
             raise ConfigFileNotFoundError
     except ConfigFileNotFoundError as e:
@@ -573,8 +600,8 @@ if __name__=="__main__":
     # получаем из конфигурационных файлов пути: 
     # 	out_directory -- путь для записи файлов
     # 	bank_directory -- путь к казначейским файлам
-    paths = ReadConfig()
-    for dir_ in paths:
+    bank_directory, out_directory = ReadConfig()
+    for dir_ in bank_directory, out_directory:
         try:
             if not os.path.isdir(dir_):
                 raise DirectoryNotFound(dir_)
@@ -582,7 +609,6 @@ if __name__=="__main__":
             os.mkdir(dir_)
             print(e.message)
             sys.exit()
-    bank_directory, out_directory = paths[0], paths[1]
 
 
     # подготовка, генерация таблицы в  FillList()
