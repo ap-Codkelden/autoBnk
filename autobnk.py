@@ -386,7 +386,7 @@ class WriteFile():
 
         summary = GetSummaryData()
         new_list = map(Position,
-                ['divs/singleline','divs/doubleline','divs/emphline','divs/italic'])
+                    ['divs/singleline','divs/doubleline','divs/emphline','divs/italic'])
         return tuple(new_list)
 
     def MakeHTML(self, rows):
@@ -418,8 +418,12 @@ class WriteFile():
                 css = ' class="italic"'
             else:
                 css = ''
-            __page_body=__page_body + "<tr{0}><td class='names'>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>".format(css,r[0],hrn(r[1]),hrn(r[2]),hrn(r[3]),hrn(r[4]),hrn(r[5]))
-            #__page_body=''.join(["<tr{0}><td class='names'>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>".format(css,r[0],hrn(r[1]),hrn(r[2]),hrn(r[3]),hrn(r[4]),hrn(r[5]))])
+            __page_body=''.join([ 
+                __page_body, 
+                """<tr{0}><td class='names'>{1}</td><td>{2}</td>
+                <td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td>
+                </tr>""".format(css,r[0],hrn(r[1]),hrn(r[2]),hrn(r[3]),hrn(r[4]),hrn(r[5])) 
+                ])
             __counter+=1
         # __header просто синтаксический сахар 
         __header = HTML_BLOCK_START.format(self.GetCSS(),self.dt.CurrentDate(), \
@@ -439,7 +443,6 @@ class WriteFile():
                 f.write(content)
         finally:
             return fn
-
 
 
     def WriteXML(self, rows):
