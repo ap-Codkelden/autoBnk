@@ -1,9 +1,7 @@
-# 'dbftr' -- DBF handle import class 
-# class importDBF:
+#!/usr/bin/env python 
+# -*- coding: utf-8 -*-
 
-# байты в заголовке
-# 0-1	
-# 
+# 'dbftr' -- DBF handle import class 
 # 
 # почему-то в этом файле дескриптор полей начинается с 32-го байта, и описание 
 # поля в дескрипторе полей занимает тоже 32 байта.
@@ -28,7 +26,6 @@ class dbfToList:
 		"""
 		# с 4й позиции начинается число записей
 		self.dfile.seek(4)
-		#_list = []
 		for i in self.bytelist:
 			self._list.append(self.dfile.read(i))
 		for i in range(len(self._list)):
