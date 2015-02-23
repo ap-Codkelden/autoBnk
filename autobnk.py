@@ -40,7 +40,7 @@ import os.path
 from os import listdir
 from os.path import isfile, join
 from xml.dom import minidom
-from dbftr import dbfToList
+from utils import dbfToList
 
 ArgParser = argparse.ArgumentParser(description='Выборка сумм уплаченных \
     налогов из файлов ГКС (приказ ГКУ/ГНСУ №74/194 от 25.04.2002)', \
@@ -55,6 +55,7 @@ ArgParser.add_argument('-xml', '--xmlfile', help='генерировать XML-�
 ArgParser.add_argument('-m', '--memory', help='создавать файл базы данных: \
     1 - в памяти, 0 - на диске', action='store', default=1, type=int, \
     dest='memory')
+
 
 """ Глобальные списки, константы и прочее """
 # константа TREASURY_INVERSE определяет код(ы) казначейств(а), для которых 
@@ -416,7 +417,10 @@ class WriteFile():
             HTML_BLOCK_START + __page_body + HTML_BLOCK_END
         и записывается в дальнейшем в файл процедурой write_html.
         """
-        hrn = lambda x: math.ceil(x/100) if ((x/100) % 1) > 0.51 else math.floor(x/100)
+        
+        hrn = lambda x: math.ceil(x/100) if ((x/100)%1)>0.51 \
+            else math.floor(x/100)
+
         __delims = self.GetDelimitersPosition()
         __counter = 0
         __page_body = ''
