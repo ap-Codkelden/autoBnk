@@ -101,6 +101,7 @@ class TreasuryFilesNotFound(FileNotFoundError):
         FileNotFoundError.__init__(self)
         self.message = "Отсутствуют казначейские выписки, продолжение работы невозможно.\nДо свидания."
 
+
 class DateHandle:
     """ Класс обработки даты и перевода даты в 36-ричной системе
     счисления в обычную дату  
@@ -134,7 +135,6 @@ class Writer:
             ai2 = 0 if i[2] == None else i[2]
             ai3 = 0 if i[3] == None else i[3]
             self.a.append([i[0],ai1,ai2,ai1+ai2,ai3,ai1+ai2+ai3])
-            print(self.a)
 
     def GetList(self):
         return self.a
@@ -153,27 +153,42 @@ class MakeTables:
 
     def MakeSum(self, varname):
         """ Формирует ИТОГОВЫЕ СТРОКИ, которые будут добавлены в 
-        таблицу на печать """
-        s18 = s83 = s87 = 0
-        for d in self.s.iter('sum'):
-            if d[0].text==varname:
-                desc = d[2].text
-                numb3rs = [int(f) for f in d[1].text.split(',')]
-                for i in self.bank:
-                    if i[0] in numb3rs:
-                        s83 = ((s83 + 0) if i[2]==None else (s83+i[2]))
-                        s87 = ((s87 + 0) if i[3]==None else (s87+i[3]))
-                        s18 = ((s18 + 0) if i[4]==None else (s18+i[4]))
-        return [desc, s83, s87, s18]
+        таблицу на печать. Номер строки из файла конфигурации сравнивается с 
+        номером строки в итоговой таблице, и в случае совпадения значения этой 
+        строки добавляются в общему итогу.
+        Параметры:
+            varname - имя переменной из подраздела <sum> раздела <sums> файла 
+                конфигурации summary.xml
+        """
+        try:
+            s18 = s83 = s87 = 0 # начальные нулевые значения
+            total = [s18,s83,s87,]
+            for d in self.s.iter('sum'):
+                if d[0].text==varname:
+                    total_row = [d[2].text] # начало строки итогов
+                    numb3rs = [int(f) for f in d[1].text.split(',')]
+                    for i in self.bank:
+                        if i[0] in numb3rs:
+                            # замена None => 0
+                            l = [0 if x is None else x for x in i[2:]]
+                            total = [x+y for x,y in zip(total,l)]
+                    total_row.extend(total)
+            return total_row
+        # except TypeError:
+        #     print(total,l)
+        except:
+            raise
+
 
     def FillList(self):
-        """ создание полного массива для дальнейшей обрботки. 
+        """Создание полного массива для дальнейшей обрботки. 
         Этот массив рекомендуется использовать для работы с другими 
         форматами, если чем-то не устроит XML-файл
         Значения сумм налогов в этом списке умножены на 100, то есть 
         123,45 грн. выглядит как 12345 
         ВАЖНО: номера строк для печати разделителей считать БЕЗ УЧЕТА 
-        разделителей!!! """
+        разделителей!
+        """
         # сюда запишем результат
         over_list = []
         # находим раздел конфига inserts 
@@ -403,7 +418,6 @@ class WriteFile():
         """
         hrn = lambda x: math.ceil(x/100) if ((x/100) % 1) > 0.51 else math.floor(x/100)
         __delims = self.GetDelimitersPosition()
-        print('__delims',__delims)
         __counter = 0
         __page_body = ''
         for r in rows:
@@ -601,7 +615,6 @@ def GetFileNames(bankpath):
 if __name__=="__main__":
     # получаем агрументы командной строки
     results = ArgParser.parse_args()
-    print(results.memory)
     
     # получаем из конфигурационных файлов пути: 
     # 	out_directory -- путь для записи файлов
