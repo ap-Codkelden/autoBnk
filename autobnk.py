@@ -3,7 +3,7 @@
 
 """ 
 AutoBnk
-version 4.1.3
+version 4.1.4
 
   The MIT License (MIT)
   Copyright (c) 2008 - 2015 Renat Nasridinov, <mavladi@gmail.com>
@@ -25,7 +25,6 @@ version 4.1.3
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE. 
-
 """
 
 import argparse
@@ -33,7 +32,6 @@ import math
 import sqlite3
 import sys
 import xml.etree.ElementTree as ET
-import json
 import webbrowser
 from datetime import date
 import os.path
@@ -44,7 +42,7 @@ from utils import dbfToList
 
 ArgParser = argparse.ArgumentParser(description='Выборка сумм уплаченных \
     налогов из файлов ГКС (приказ ГКУ/ГНСУ №74/194 от 25.04.2002)', \
-    epilog='По умолчанию вывод осуществляестя в HTML-файл\
+    epilog='По умолчанию вывод осуществляестя в HTML-файл \
     bankMMDD.html в каталог, указанный в конфигурационном \
     файле (см. документацию)')
 
@@ -52,10 +50,16 @@ ArgParser.add_argument('-xml', '--xmlfile', help='генерировать XML-�
     обмена данными bankMMDD.xml', action='store_true', default=False, \
     dest='xmlfile')
 
-ArgParser.add_argument('-m', '--memory', help='создавать файл базы данных: \
+ArgParser.add_argument('-d', '--disk', help='создавать файл базы данных: \
     1 - в памяти, 0 - на диске', action='store', default=1, type=int, \
     dest='memory')
 
+ArgParser.add_argument('-nosep', '--noseparator', help='не использовать \
+    разделитель разрядов', action='store_true')
+
+ArgParser.add_argument('-m', '--mark', help='символ, используемый в качестве \
+    разделителя разрядов (по умолчанию - одинарная кавычка)', action='store', \
+    default="'", type=str, dest='decimal_mark')
 
 """ Глобальные списки, константы и прочее """
 # константа TREASURY_INVERSE определяет код(ы) казначейств(а), для которых 
@@ -94,6 +98,15 @@ class DirectoryNotFound(AutobnkErrors):
     def __init__(self, dir_path):
         self.message = "Каталог %s не найден и будет создан." % (dir_path)
 
+class WrongSeparatorError(AutobnkErrors):
+    """ Исключение, возникающее если длина разделителя превышает 1 символ
+
+    Атрибуты:
+    sep - неверный разделитель
+    """
+    def __init__(self, sep):
+        print("Разделитель `%s` неверный и будет сброшен." % (sep))
+
 class TreasuryFilesNotFound(FileNotFoundError):
     """ Исключение, возникающее при отсутствии казначейских файлов.
     Атрибуты:
@@ -101,7 +114,6 @@ class TreasuryFilesNotFound(FileNotFoundError):
     def __init__(self):
         FileNotFoundError.__init__(self)
         self.message = "Отсутствуют казначейские выписки, продолжение работы невозможно.\nДо свидания."
-
 
 class DateHandle:
     """ Класс обработки даты и перевода даты в 36-ричной системе
@@ -416,10 +428,19 @@ class WriteFile():
         Страница формируется как:
             HTML_BLOCK_START + __page_body + HTML_BLOCK_END
         и записывается в дальнейшем в файл процедурой write_html.
+        Также содержит функцию Separator - добавляет разделитель разрядов, 
+        определенный в переменной decimal_mark в зависимости от значения 
+        переменной noseparator. 
+        По умолчанию добавляет в качестве разделителя одинарную кавычку.
         """
-        
+        def Separator(sep_num, noseparator=noseparator):
+            if noseparator:
+                return str(sep_num)
+            else:
+                return format(sep_num, ",d").replace(",", decimal_mark)
+
         hrn = lambda x: math.ceil(x/100) if ((x/100)%1)>0.51 \
-            else math.floor(x/100)
+                else math.floor(x/100)
 
         __delims = self.GetDelimitersPosition()
         __counter = 0
@@ -439,11 +460,17 @@ class WriteFile():
                 css = ' class="italic"'
             else:
                 css = ''
-            __page_body=''.join([ 
-                __page_body, 
-                """<tr{0}><td class='names'>{1}</td><td>{2}</td>
+
+            row = """<tr{0}><td class='names'>{1}</td><td>{2}</td>
                 <td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td>
-                </tr>""".format(css,r[0],hrn(r[1]),hrn(r[2]),hrn(r[3]),hrn(r[4]),hrn(r[5])) 
+                </tr>""".format(css,r[0],Separator(hrn(r[1])),
+                    hrn(r[2]),
+                    hrn(r[3]),
+                    hrn(r[4]),
+                    hrn(r[5]))
+
+            __page_body=''.join([ 
+                __page_body, row
                 ])
             __counter+=1
         # __header просто синтаксический сахар 
@@ -510,28 +537,6 @@ def ParseFile(tr_dir, tr_f):
     # список строк tr_val и код территории казначейства 
     # (расширение файла)
     base.FillTable(tr_val, tr_f[-3:])
-
-
-def ReadJSONConfig():
-    """наполняет кортеж для расширений файлов казны tr_ext кодами территорий 
-    казначейств из config.json"""
-    try:
-        config_path = 'config\\config.json'
-        if os.path.exists('config\\config.json'):
-            treasury_conf = ET.parse('config\\config.xml')
-            tr = treasury_conf.getroot()
-            if not os.path.exists(tr[0][1].text):
-                os.makedirs(tr[0][1].text)
-            for tr_code in tr.iter('code'):
-                tr_ext.append(tr_code.text)
-            for item in tr.iter('file'):
-                raj_dict[item[1].text]=item[2].text
-            return tr[0][0].text, tr[0][1].text
-        else:
-            raise ConfigFileNotFoundError
-    except ConfigFileNotFoundError as e:
-        print(e.message)
-        sys.exit()
 
 
 def ReadConfig():
@@ -619,7 +624,16 @@ def GetFileNames(bankpath):
 if __name__=="__main__":
     # получаем агрументы командной строки
     results = ArgParser.parse_args()
-    
+    print(results)
+    # наличие разделителя и сам разделитель 
+    try:
+        noseparator = results.noseparator
+        decimal_mark = results.decimal_mark
+        if (not decimal_mark and not noseparator) or len(decimal_mark)>1:
+            raise WrongSeparatorError(decimal_mark)
+    except WrongSeparatorError:
+        decimal_mark = "'"
+
     # получаем из конфигурационных файлов пути: 
     # 	out_directory -- путь для записи файлов
     # 	bank_directory -- путь к казначейским файлам
@@ -632,7 +646,6 @@ if __name__=="__main__":
             os.mkdir(dir_)
             print(e.message)
             sys.exit()
-
 
     # подготовка, генерация таблицы в  FillList()
     if not results.memory:
