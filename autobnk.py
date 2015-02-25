@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """ 
-AutoBnk
-version 4.1.4
-
   The MIT License (MIT)
   Copyright (c) 2008 - 2015 Renat Nasridinov, <mavladi@gmail.com>
   
@@ -40,11 +37,16 @@ from os.path import isfile, join
 from xml.dom import minidom
 from utils import dbfToList
 
+version = '4.1.4'
+
 ArgParser = argparse.ArgumentParser(description='Выборка сумм уплаченных \
     налогов из файлов ГКС (приказ ГКУ/ГНСУ №74/194 от 25.04.2002)', \
     epilog='По умолчанию вывод осуществляестя в HTML-файл \
     bankMMDD.html в каталог, указанный в конфигурационном \
     файле (см. документацию)')
+
+ArgParser.add_argument('--version', action='version', \
+    version='%(prog)s {}'.format(version))
 
 ArgParser.add_argument('-xml', '--xmlfile', help='генерировать XML-файл \
     обмена данными bankMMDD.xml', action='store_true', default=False, \
@@ -58,8 +60,8 @@ ArgParser.add_argument('-nosep', '--noseparator', help='не использов�
     разделитель разрядов', action='store_true')
 
 ArgParser.add_argument('-m', '--mark', help='символ, используемый в качестве \
-    разделителя разрядов (по умолчанию - одинарная кавычка)', action='store', \
-    default="'", type=str, dest='decimal_mark')
+    разделителя разрядов', action='store', \
+    default=" ", type=str, dest='decimal_mark')
 
 """ Глобальные списки, константы и прочее """
 # константа TREASURY_INVERSE определяет код(ы) казначейств(а), для которых 
@@ -99,13 +101,15 @@ class DirectoryNotFound(AutobnkErrors):
         self.message = "Каталог %s не найден и будет создан." % (dir_path)
 
 class WrongSeparatorError(AutobnkErrors):
-    """ Исключение, возникающее если длина разделителя превышает 1 символ
+    """ Исключение, возникающее если длина разделителя превышает 1 символ или 
+    разделитель является цифрой или буквой.
 
     Атрибуты:
     sep - неверный разделитель
     """
     def __init__(self, sep):
-        print("Разделитель `%s` неверный и будет сброшен." % (sep))
+        print("Разделитель `%s` неверный. Будет установлен разделитель по \
+            умолчанию." % (sep))
 
 class TreasuryFilesNotFound(FileNotFoundError):
     """ Исключение, возникающее при отсутствии казначейских файлов.
@@ -431,7 +435,7 @@ class WriteFile():
         Также содержит функцию Separator - добавляет разделитель разрядов, 
         определенный в переменной decimal_mark в зависимости от значения 
         переменной noseparator. 
-        По умолчанию добавляет в качестве разделителя одинарную кавычку.
+        По умолчанию добавляет в качестве разделителя пробел.
         """
         def Separator(sep_num, noseparator=noseparator):
             if noseparator:
@@ -464,10 +468,10 @@ class WriteFile():
             row = """<tr{0}><td class='names'>{1}</td><td>{2}</td>
                 <td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td>
                 </tr>""".format(css,r[0],Separator(hrn(r[1])),
-                    hrn(r[2]),
-                    hrn(r[3]),
-                    hrn(r[4]),
-                    hrn(r[5]))
+                    Separator(hrn(r[2])),
+                    Separator(hrn(r[3])),
+                    Separator(hrn(r[4])),
+                    Separator(hrn(r[5])))
 
             __page_body=''.join([ 
                 __page_body, row
@@ -629,7 +633,8 @@ if __name__=="__main__":
     try:
         noseparator = results.noseparator
         decimal_mark = results.decimal_mark
-        if (not decimal_mark and not noseparator) or len(decimal_mark)>1:
+        if (not decimal_mark and not noseparator) or len(decimal_mark)>1 or \
+            decimal_mark.isdigit() or decimal_mark.isalpha():
             raise WrongSeparatorError(decimal_mark)
     except WrongSeparatorError:
         decimal_mark = "'"
