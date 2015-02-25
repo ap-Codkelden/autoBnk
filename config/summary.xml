@@ -58,7 +58,6 @@
 		<!-- линии ставятся после -->
 		<singleline>20,26,33,36</singleline>
 		<doubleline>17,41</doubleline>
-		<!-- emphline - полужирный -->
 		<emphline>21,24,34</emphline>
 		<italic>3,15,28</italic>
 	</divs>

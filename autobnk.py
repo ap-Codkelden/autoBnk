@@ -1,7 +1,7 @@
-""" 
-AutoBnk4  
-version 4.6.0
+#!/usr/bin/env python 
+# -*- coding: utf-8 -*-
 
+""" 
   The MIT License (MIT)
   Copyright (c) 2008 - 2015 Renat Nasridinov, <mavladi@gmail.com>
   
@@ -22,35 +22,46 @@ version 4.6.0
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE. 
-
 """
 
 import argparse
 import math
 import sqlite3
 import sys
-import xml.etree.ElementTree as ET 
+import xml.etree.ElementTree as ET
 import webbrowser
 from datetime import date
 import os.path
 from os import listdir
 from os.path import isfile, join
 from xml.dom import minidom
-from dbftr import dbfToList
+from utils import dbfToList
+
+version = '4.1.4'
 
 ArgParser = argparse.ArgumentParser(description='Выборка сумм уплаченных \
     налогов из файлов ГКС (приказ ГКУ/ГНСУ №74/194 от 25.04.2002)', \
-    epilog='По умолчанию вывод осуществляестя в HTML-файл\
+    epilog='По умолчанию вывод осуществляестя в HTML-файл \
     bankMMDD.html в каталог, указанный в конфигурационном \
     файле (см. документацию)')
+
+ArgParser.add_argument('--version', action='version', \
+    version='%(prog)s {}'.format(version))
 
 ArgParser.add_argument('-xml', '--xmlfile', help='генерировать XML-файл \
     обмена данными bankMMDD.xml', action='store_true', default=False, \
     dest='xmlfile')
 
-ArgParser.add_argument('-m', '--memory', help='создавать файл базы данных: \
+ArgParser.add_argument('-d', '--disk', help='создавать файл базы данных: \
     1 - в памяти, 0 - на диске', action='store', default=1, type=int, \
     dest='memory')
+
+ArgParser.add_argument('-nosep', '--noseparator', help='не использовать \
+    разделитель разрядов', action='store_true')
+
+ArgParser.add_argument('-m', '--mark', help='символ, используемый в качестве \
+    разделителя разрядов', action='store', \
+    default=" ", type=str, dest='decimal_mark')
 
 """ Глобальные списки, константы и прочее """
 # константа TREASURY_INVERSE определяет код(ы) казначейств(а), для которых 
@@ -88,6 +99,17 @@ class DirectoryNotFound(AutobnkErrors):
     message - сообщение """
     def __init__(self, dir_path):
         self.message = "Каталог %s не найден и будет создан." % (dir_path)
+
+class WrongSeparatorError(AutobnkErrors):
+    """ Исключение, возникающее если длина разделителя превышает 1 символ или 
+    разделитель является цифрой или буквой.
+
+    Атрибуты:
+    sep - неверный разделитель
+    """
+    def __init__(self, sep):
+        print("Разделитель `%s` неверный. Будет установлен разделитель по \
+            умолчанию." % (sep))
 
 class TreasuryFilesNotFound(FileNotFoundError):
     """ Исключение, возникающее при отсутствии казначейских файлов.
@@ -148,27 +170,42 @@ class MakeTables:
 
     def MakeSum(self, varname):
         """ Формирует ИТОГОВЫЕ СТРОКИ, которые будут добавлены в 
-        таблицу на печать """
-        s18 = s83 = s87 = 0
-        for d in self.s.iter('sum'):
-            if d[0].text==varname:
-                desc = d[2].text
-                numb3rs = [int(f) for f in d[1].text.split(',')]
-                for i in self.bank:
-                    if i[0] in numb3rs:
-                        s83 = ((s83 + 0) if i[2]==None else (s83+i[2]))
-                        s87 = ((s87 + 0) if i[3]==None else (s87+i[3]))
-                        s18 = ((s18 + 0) if i[4]==None else (s18+i[4]))
-        return [desc, s83, s87, s18]
+        таблицу на печать. Номер строки из файла конфигурации сравнивается с 
+        номером строки в итоговой таблице, и в случае совпадения значения этой 
+        строки добавляются в общему итогу.
+        Параметры:
+            varname - имя переменной из подраздела <sum> раздела <sums> файла 
+                конфигурации summary.xml
+        """
+        try:
+            s18 = s83 = s87 = 0 # начальные нулевые значения
+            total = [s18,s83,s87,]
+            for d in self.s.iter('sum'):
+                if d[0].text==varname:
+                    total_row = [d[2].text] # начало строки итогов
+                    numb3rs = [int(f) for f in d[1].text.split(',')]
+                    for i in self.bank:
+                        if i[0] in numb3rs:
+                            # замена None => 0
+                            l = [0 if x is None else x for x in i[2:]]
+                            total = [x+y for x,y in zip(total,l)]
+                    total_row.extend(total)
+            return total_row
+        # except TypeError:
+        #     print(total,l)
+        except:
+            raise
+
 
     def FillList(self):
-        """ создание полного массива для дальнейшей обрботки. 
+        """Создание полного массива для дальнейшей обрботки. 
         Этот массив рекомендуется использовать для работы с другими 
         форматами, если чем-то не устроит XML-файл
         Значения сумм налогов в этом списке умножены на 100, то есть 
         123,45 грн. выглядит как 12345 
         ВАЖНО: номера строк для печати разделителей считать БЕЗ УЧЕТА 
-        разделителей!!! """
+        разделителей!
+        """
         # сюда запишем результат
         over_list = []
         # находим раздел конфига inserts 
@@ -256,7 +293,7 @@ class DBProcessing:
                             bank_sum s \
                             on e.code = s.code\
                             ORDER BY nompp")
-        return (self.db_cur.fetchall())
+        return self.db_cur.fetchall()
 
     def MakeEtalon(self):
         try:
@@ -369,22 +406,23 @@ class WriteFile():
         return ''.join((out_directory,os.sep,filename,'.', extension))
 
     def GetDelimitersPosition(self):
-        """ Возвращает кортеж из списков (single_ln, double_ln, emph_ln)
-        В первом списке single_ln -- номера строк, после которых вставляется 
-        просто линия (начиная с версии 4.5 -- оставлена как резерв), во втором 
-        double_ln -- номера строк, после которых следует строка, которую нужно
-        выделить, в emph_ln -- строки, в которых тоже будет выделение (земля, 
-        единый).
-        Эти данные хранятся в переменных раздела <divs> singleline, doubleline и
-        emphline соответственно (файл summary.xml)
+        """ Возвращает кортеж из списков (single_ln, double_ln, emph_ln, 
+        italic_ln), содержащих номера строк, после которых применяются эффекты:
+        Список      Эффект                  класс CSS       
+        single_ln   одинарная линия         single
+        double_ln   полужирный с  рамкой    total
+        emph_ln     полужирный              emphasis
+        italic_ln   курсив                  italic
+        Эти данные хранятся в переменных раздела <divs> singleline, doubleline, 
+        italic и emphline соответственно файла summary.xml
         """
+        def Position(xpath):
+            return tuple(map(int,summary.find(xpath).text.split(',')))
+
         summary = GetSummaryData()
-        single_ln=list(map(int,summary.find('divs/singleline').text.split(',')))
-        double_ln=list(map(int,summary.find('divs/doubleline').text.split(',')))
-        emph_ln=list(map(int,summary.find('divs/emphline').text.split(',')))
-        italic_ln=list(map(int,summary.find('divs/italic').text.split(',')))
-        #return (single_ln, double_ln, emph_ln)
-        return (single_ln, double_ln, emph_ln, italic_ln)
+        new_list = map(Position,
+                    ['divs/singleline','divs/doubleline','divs/emphline','divs/italic'])
+        return tuple(new_list)
 
     def MakeHTML(self, rows):
         """ Компонует страницу html.
@@ -394,8 +432,20 @@ class WriteFile():
         Страница формируется как:
             HTML_BLOCK_START + __page_body + HTML_BLOCK_END
         и записывается в дальнейшем в файл процедурой write_html.
+        Также содержит функцию Separator - добавляет разделитель разрядов, 
+        определенный в переменной decimal_mark в зависимости от значения 
+        переменной noseparator. 
+        По умолчанию добавляет в качестве разделителя пробел.
         """
-        hrn = lambda x: math.ceil(x/100) if ((x/100) % 1) > 0.51 else math.floor(x/100)
+        def Separator(sep_num, noseparator=noseparator):
+            if noseparator:
+                return str(sep_num)
+            else:
+                return format(sep_num, ",d").replace(",", decimal_mark)
+
+        hrn = lambda x: math.ceil(x/100) if ((x/100)%1)>0.51 \
+                else math.floor(x/100)
+
         __delims = self.GetDelimitersPosition()
         __counter = 0
         __page_body = ''
@@ -414,7 +464,18 @@ class WriteFile():
                 css = ' class="italic"'
             else:
                 css = ''
-            __page_body=__page_body + "<tr{0}><td class='names'>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td></tr>".format(css,r[0],hrn(r[1]),hrn(r[2]),hrn(r[3]),hrn(r[4]),hrn(r[5]))
+
+            row = """<tr{0}><td class='names'>{1}</td><td>{2}</td>
+                <td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td>
+                </tr>""".format(css,r[0],Separator(hrn(r[1])),
+                    Separator(hrn(r[2])),
+                    Separator(hrn(r[3])),
+                    Separator(hrn(r[4])),
+                    Separator(hrn(r[5])))
+
+            __page_body=''.join([ 
+                __page_body, row
+                ])
             __counter+=1
         # __header просто синтаксический сахар 
         __header = HTML_BLOCK_START.format(self.GetCSS(),self.dt.CurrentDate(), \
@@ -434,7 +495,6 @@ class WriteFile():
                 f.write(content)
         finally:
             return fn
-
 
 
     def WriteXML(self, rows):
@@ -482,6 +542,7 @@ def ParseFile(tr_dir, tr_f):
     # (расширение файла)
     base.FillTable(tr_val, tr_f[-3:])
 
+
 def ReadConfig():
     """наполняет кортеж для расширений файлов казны tr_ext кодами территорий 
     казначейств из config.xml"""
@@ -495,7 +556,7 @@ def ReadConfig():
                 tr_ext.append(tr_code.text)
             for item in tr.iter('file'):
                 raj_dict[item[1].text]=item[2].text
-            return (tr[0][0].text, tr[0][1].text)
+            return tr[0][0].text, tr[0][1].text
         else:
             raise ConfigFileNotFoundError
     except ConfigFileNotFoundError as e:
@@ -567,13 +628,22 @@ def GetFileNames(bankpath):
 if __name__=="__main__":
     # получаем агрументы командной строки
     results = ArgParser.parse_args()
-    print(results.memory)
-    
+    print(results)
+    # наличие разделителя и сам разделитель 
+    try:
+        noseparator = results.noseparator
+        decimal_mark = results.decimal_mark
+        if (not decimal_mark and not noseparator) or len(decimal_mark)>1 or \
+            decimal_mark.isdigit() or decimal_mark.isalpha():
+            raise WrongSeparatorError(decimal_mark)
+    except WrongSeparatorError:
+        decimal_mark = "'"
+
     # получаем из конфигурационных файлов пути: 
     # 	out_directory -- путь для записи файлов
     # 	bank_directory -- путь к казначейским файлам
-    paths = ReadConfig()
-    for dir_ in paths:
+    bank_directory, out_directory = ReadConfig()
+    for dir_ in bank_directory, out_directory:
         try:
             if not os.path.isdir(dir_):
                 raise DirectoryNotFound(dir_)
@@ -581,8 +651,6 @@ if __name__=="__main__":
             os.mkdir(dir_)
             print(e.message)
             sys.exit()
-    bank_directory, out_directory = paths[0], paths[1]
-
 
     # подготовка, генерация таблицы в  FillList()
     if not results.memory:
