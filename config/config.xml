@@ -7,7 +7,7 @@
 	<treasury_files>
 		<file>
 			<treasury>УДКСУ у Криворізькому районі</treasury>
-			<code>097</code>
+			<code inverse="1">097</code>
 			<raj>18</raj>
 		</file>
 		<file>
