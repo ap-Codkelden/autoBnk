@@ -4,7 +4,7 @@ body {
 	padding-left: 6em; 
 }
 
-.total td {
+.double td {
  	border: 2px solid #000000;
  	font-weight: bolder;
  }
@@ -21,7 +21,7 @@ body {
 	font-style: italic;
 }
 
-#dt {
+.dt {
  	font-weight: bolder;
 }
 
