@@ -549,11 +549,9 @@ def ReadConfig():
                 os.makedirs(tr[0][1].text)
             for tr_code in tr.iter('code'):
                 if 'inverse' in tr_code.attrib:
-                    print(tr_code.attrib['inverse'])
                     if tr_code.attrib['inverse'].lower() in ('1','true'):
                         tr_inv.append(tr_code.text)
                 tr_ext.append(tr_code.text)
-            print(tr_inv,tr_ext)
             for item in tr.iter('file'):
                 raj_dict[item[1].text]=item[2].text
             return tr[0][0].text, tr[0][1].text
@@ -627,7 +625,6 @@ def GetFileNames(bankpath):
 if __name__=="__main__":
     # получаем агрументы командной строки
     results = ArgParser.parse_args()
-    print(results)
     # наличие разделителя и сам разделитель 
     try:
         noseparator = results.noseparator
