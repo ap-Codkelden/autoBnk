@@ -379,9 +379,11 @@ class WriteFile():
         self.tr_date = fn
 
     def GetCSS(self):
-        """Открывает файл CSS и возвращает его содержимое для вставки в HTML-файл"""
+        """Открывает минифицированный файл CSS и возвращает его содержимое 
+        для вставки в HTML-файл
+        """
         try:
-            return open('config\\bank.css','r').read().replace('\n', '')
+            return open('config\\bank.min.css','r').read().replace('\n', '')
         except FileNotFoundError:
             print("ПРЕДУПРЕЖДЕНИЕ: Файл `bank.css` не найден. Таблица будет неотформатирована.")
 
