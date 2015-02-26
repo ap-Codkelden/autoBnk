@@ -153,7 +153,7 @@
 	</row>
 	<row code='140200'>
 		<query>
-			<rozd>1</rozd>
+			<rozd></rozd>
 			<bd>0</bd>
 			<rd>1402</rd>
 			<pg>08</pg>
@@ -180,13 +180,6 @@
 			<bd>0</bd>
 			<rd>2406</rd>
 			<pg>03</pg>
-			<coef>1.00</coef>
-		</query>
-		<query>
-			<rozd>1</rozd>
-			<bd>0</bd>
-			<rd>1909</rd>
-			<pg></pg>
 			<coef>1.00</coef>
 		</query>
 	</row>
@@ -231,7 +224,7 @@
 	<row code='110108'>
 		<!-- НДФЛ в виде % -->
 		<query>
-			<rozd>3</rozd>
+			<rozd></rozd>
 			<bd>0</bd>
 			<rd>1101</rd>
 			<pg>08</pg>
@@ -257,13 +250,13 @@
 			<coef>1.00</coef> 
 		</query>
 	</row>
-	<row code='190401'>
+	<row code='180505'>
 		<!-- Фіксований сільськогосподарський податок -->
 		<query>
-			<rozd></rozd>
+			<rozd>1</rozd>
 			<bd>1</bd>
-			<rd>1904</rd>
-			<pg>01</pg>
+			<rd>1805</rd>
+			<pg>05</pg>
 			<coef>1.00</coef>
 		</query>
 	</row>
@@ -387,7 +380,7 @@
 	</row>
 	<row code='140400'>
 		<query>
-			<rozd>4</rozd>
+			<rozd></rozd>
 			<bd>1</bd>
 			<rd>1404</rd>
 			<pg></pg>
@@ -453,28 +446,28 @@
 	</row>
 	<row code='180100'>
 		<query>
-			<rozd>4</rozd>
+			<rozd></rozd>
 			<bd>1</bd>
 			<rd>1801</rd>
 			<pg>01</pg>
 			<coef>1.00</coef>
 		</query>
 		<query>
-			<rozd>4</rozd>
+			<rozd></rozd>
 			<bd>1</bd>
 			<rd>1801</rd>
 			<pg>02</pg>
 			<coef>1.00</coef>
 		</query>
 		<query>
-			<rozd>4</rozd>
+			<rozd></rozd>
 			<bd>1</bd>
 			<rd>1801</rd>
 			<pg>03</pg>
 			<coef>1.00</coef>
 		</query>
 		<query>
-			<rozd>4</rozd>
+			<rozd></rozd>
 			<bd>1</bd>
 			<rd>1801</rd>
 			<pg>04</pg>

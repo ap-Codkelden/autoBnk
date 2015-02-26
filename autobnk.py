@@ -25,6 +25,7 @@
 """
 
 import argparse
+from jinja2 import Template
 import math
 import sqlite3
 import sys
@@ -37,7 +38,7 @@ from os.path import isfile, join
 from xml.dom import minidom
 from utils import dbfToList
 
-version = '4.1.4'
+version = '4.1.5'
 
 ArgParser = argparse.ArgumentParser(description='Выборка сумм уплаченных \
     налогов из файлов ГКС (приказ ГКУ/ГНСУ №74/194 от 25.04.2002)', \
@@ -62,27 +63,6 @@ ArgParser.add_argument('-nosep', '--noseparator', help='не использов�
 ArgParser.add_argument('-m', '--mark', help='символ, используемый в качестве \
     разделителя разрядов', action='store', \
     default=" ", type=str, dest='decimal_mark')
-
-""" Глобальные списки, константы и прочее """
-# константа TREASURY_INVERSE определяет код(ы) казначейств(а), для которых 
-# необходимо условие выборки, согласно которго бюджет имеет признак "сводный"- 0
-TREASURY_INVERSE = ('097',)
-
-""" Константы страницы html  
-В HTML_BLOCK_START уже внесены переменные для форматирования, в процедуре 
-MakeHTML() класса WriteFile происходит непосредственно форматирование."""
-
-HTML_BLOCK_START = """<html><head><meta http-equiv="Content-Type" content="text/html"; charset="windows-1251"><style type="text/css">{0}</style><title></title></head><body><p>Поточна дата: <span id='dt'>{1}</span><br>Дата банку: <span id='dt'>{2}</span></p><table><tr><th>Податок</th><th>Жовтн</th><th>Терн</th><th>Півн</th><th>Кр. р/н</th><th>ВСЬОГО</th></tr>"""
-HTML_BLOCK_END = """</table></body></html>"""
-
-
-# константа госбюджет
-DB = 0
-# константа местный бюджет
-MB = 1
-
-tr_ext = []    # кортеж для расширений файлов казны
-raj_dict = {}  # словарь сопоставления казначейств районам
 
 #------------------------Классы обработки ошибок-------------------------------
 
@@ -118,6 +98,7 @@ class TreasuryFilesNotFound(FileNotFoundError):
     def __init__(self):
         FileNotFoundError.__init__(self)
         self.message = "Отсутствуют казначейские выписки, продолжение работы невозможно.\nДо свидания."
+
 
 class DateHandle:
     """ Класс обработки даты и перевода даты в 36-ричной системе
@@ -385,9 +366,11 @@ class WriteFile():
         self.tr_date = fn
 
     def GetCSS(self):
-        """Открывает файл CSS и возвращает его содержимое для вставки в HTML-файл"""
+        """Открывает минифицированный файл CSS и возвращает его содержимое 
+        для вставки в HTML-файл
+        """
         try:
-            return open('config\\bank.css','r').read().replace('\n', '')
+            return open('config\\bank.min.css','r').read().replace('\n', '')
         except FileNotFoundError:
             print("ПРЕДУПРЕЖДЕНИЕ: Файл `bank.css` не найден. Таблица будет неотформатирована.")
 
@@ -406,86 +389,98 @@ class WriteFile():
         return ''.join((out_directory,os.sep,filename,'.', extension))
 
     def GetDelimitersPosition(self):
-        """ Возвращает кортеж из списков (single_ln, double_ln, emph_ln, 
+        """ Возвращает словарь из списков (single_ln, double_ln, emph_ln, 
         italic_ln), содержащих номера строк, после которых применяются эффекты:
-        Список      Эффект                  класс CSS       
+        Список      Эффект                  ключ словаря/класс CSS        
         single_ln   одинарная линия         single
-        double_ln   полужирный с  рамкой    total
+        double_ln   полужирный с  рамкой    double
         emph_ln     полужирный              emphasis
         italic_ln   курсив                  italic
         Эти данные хранятся в переменных раздела <divs> singleline, doubleline, 
         italic и emphline соответственно файла summary.xml
         """
         def Position(xpath):
-            return tuple(map(int,summary.find(xpath).text.split(',')))
+            # pos_values - данные из конфига
+            return tuple(map(int,pos_values.find(xpath).text.split(',')))
 
-        summary = GetSummaryData()
-        new_list = map(Position,
+        pos_values = GetSummaryData()
+        # список ключей
+        keys = ['single', 'double', 'emphasis', 'italic']
+        # список значений 
+        values = map(Position,
                     ['divs/singleline','divs/doubleline','divs/emphline','divs/italic'])
-        return tuple(new_list)
+        return dict(zip(keys,values))
+
 
     def MakeHTML(self, rows):
         """ Компонует страницу html.
-        Переменные: __delims - хранит кортеж разделителей, __counter - счётчик 
-        строк, __page_body - пустая строковая переменная для записи тела 
-        страницы. 
-        Страница формируется как:
-            HTML_BLOCK_START + __page_body + HTML_BLOCK_END
-        и записывается в дальнейшем в файл процедурой write_html.
+        Получает словарь, содержащий номера строк, после которых будут вставлены 
+        разделители либо применено форматирование (функция GetDelimitersPosition) 
+        в переменную insert_rows.
+        Определяет внутреннюю функцию GetCSSSelector, которая получает номер 
+        строки и ищет его в словаре, который возвращает функция 
+        GetDelimitersPosition и возвращает имя селектора CSS, если строке не 
+        сопоставлен стиль, возвращает пустую строку.
         Также содержит функцию Separator - добавляет разделитель разрядов, 
         определенный в переменной decimal_mark в зависимости от значения 
         переменной noseparator. 
         По умолчанию добавляет в качестве разделителя пробел.
         """
+
+        insert_rows = self.GetDelimitersPosition()
+
+        hrn = lambda x: math.ceil(x/100) if ((x/100)%1)>0.51 \
+                else math.floor(x/100)
+
         def Separator(sep_num, noseparator=noseparator):
             if noseparator:
                 return str(sep_num)
             else:
                 return format(sep_num, ",d").replace(",", decimal_mark)
 
-        hrn = lambda x: math.ceil(x/100) if ((x/100)%1)>0.51 \
-                else math.floor(x/100)
+        def GetCSSSelector(row_num, delims=insert_rows):
+            for k,v in delims.items():
+                if row_num in v:
+                    # return " class='{}'".format(k)
+                    return k
+            return ''
 
-        __delims = self.GetDelimitersPosition()
-        __counter = 0
-        __page_body = ''
-        for r in rows:
-            """
-            Вставляет классы CSS
-            """
-            __line = __counter+1
-            if __line in __delims[1]:
-                css = ' class="total"'
-            elif __line in __delims[0]:
-                css = ' class="single"'
-            elif __line in __delims[2]:
-                css = ' class="emphasis"'
-            elif __line in __delims[3]:
-                css = ' class="italic"'
-            else:
-                css = ''
+        # считываем содержимое шаблона 
+        try:
+            page_template = Template(open('config\\bank.tmpl','r',encoding='utf-8').read())
+        except FileNotFoundError:
+            print("ФАТАЛЬНО: Отсутствуeт шаблон веб-страницы.\nПродолжение работы невозможно.")
+            sys.exit()
 
-            row = """<tr{0}><td class='names'>{1}</td><td>{2}</td>
-                <td>{3}</td><td>{4}</td><td>{5}</td><td>{6}</td>
-                </tr>""".format(css,r[0],Separator(hrn(r[1])),
-                    Separator(hrn(r[2])),
-                    Separator(hrn(r[3])),
-                    Separator(hrn(r[4])),
-                    Separator(hrn(r[5])))
+        # словарь page_data будет передан в шаблон
+        page_data = {
+            'cur_date': self.dt.CurrentDate(),
+            'bank_date': self.dt.BankDate(self.tr_date),
+            'css': self.GetCSS(),
+        }
 
-            __page_body=''.join([ 
-                __page_body, row
-                ])
-            __counter+=1
-        # __header просто синтаксический сахар 
-        __header = HTML_BLOCK_START.format(self.GetCSS(),self.dt.CurrentDate(), \
-            self.dt.BankDate(self.tr_date))
-        return ''.join([__header,__page_body,HTML_BLOCK_END])
+        # пустой список строк
+        table_rows = []
+        # Генерируется новый список с нумерацией строк, начинающейся с 1
+        # 
+        for row in [(x[0]+1, x[1]) for x in enumerate(rows)]:
+            r = [GetCSSSelector(row[0])] # получим CSS 
+            name = [row[1][0]]          # название налога
+            # к готовой строке добавляются уже округленные
+            # суммы налогов, к которым применен раделитель
+            r.extend(name)
+            r.extend(list(map(Separator, map(hrn, row[1][1:]))))
+            # Формируется строка таблицы в разметке HTML
+            table_rows.append(r)
+        page_data['rows'] = table_rows
+
+        return page_template.render(page_data=page_data)
+
 
     def WriteFile(self, content):
         try:
             fn = self.ComposeFileName('html')
-            with open(fn, 'w') as f:
+            with open(fn, 'w', encoding='utf-8') as f:
                 f.write(content)
             return fn
         except PermissionError:
@@ -524,7 +519,7 @@ class WriteFile():
         with open(self.ComposeFileName('xml'),mode='bw') as xml_file:
             xml_file.write(minidom.parseString(ET.tostring(root)).toprettyxml(indent="\t", \
                 encoding='windows-1251'))
-        #xml_file.close
+
 
 def ParseFile(tr_dir, tr_f):
     # получаем имя файла, соединяя папку и имя
@@ -553,7 +548,12 @@ def ReadConfig():
             if not os.path.exists(tr[0][1].text):
                 os.makedirs(tr[0][1].text)
             for tr_code in tr.iter('code'):
+                if 'inverse' in tr_code.attrib:
+                    print(tr_code.attrib['inverse'])
+                    if tr_code.attrib['inverse'].lower() in ('1','true'):
+                        tr_inv.append(tr_code.text)
                 tr_ext.append(tr_code.text)
+            print(tr_inv,tr_ext)
             for item in tr.iter('file'):
                 raj_dict[item[1].text]=item[2].text
             return tr[0][0].text, tr[0][1].text
@@ -620,9 +620,8 @@ def PrintApprove(question, default = 'yes'):
 
 def GetFileNames(bankpath):
     return [f for f in listdir(bankpath) if isfile(os.path.join(bankpath,f)) \
-        and f[4]=='0' and ((f[3]=='1' and not f[9:] in TREASURY_INVERSE)  \
-        or ((f[2]=='0' or (f[2]=='1' and f[3]=='0')) and f[9:] in \
-        TREASURY_INVERSE))]
+        and f[4]=='0' and ((f[3]=='1' and not f[9:] in tr_inv)  \
+        or ((f[2]=='0' or (f[2]=='1' and f[3]=='0')) and f[9:] in tr_inv))]
 
 
 if __name__=="__main__":
@@ -638,6 +637,24 @@ if __name__=="__main__":
             raise WrongSeparatorError(decimal_mark)
     except WrongSeparatorError:
         decimal_mark = "'"
+
+    """ Глобальные списки, константы и прочее """
+    # константа TREASURY_INVERSE определяет код(ы) казначейств(а), для которых 
+    # необходимо условие выборки, согласно которго бюджет имеет признак "сводный"- 0
+    # TREASURY_INVERSE = ('097',)
+
+    # константа госбюджет
+    DB = 0
+    # константа местный бюджет
+    MB = 1
+
+    # списки для расширений файлов казны
+    # и для кодов казначейств, для которых необходимо условие выборки, 
+    # согласно которго бюджет имеет признак "сводный" - 0
+    tr_ext = []
+    tr_inv = []    
+
+    raj_dict = {}  # словарь сопоставления казначейств районам
 
     # получаем из конфигурационных файлов пути: 
     # 	out_directory -- путь для записи файлов
