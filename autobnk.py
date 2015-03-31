@@ -2,26 +2,26 @@
 # -*- coding: utf-8 -*-
 
 """ 
-  The MIT License (MIT)
-  Copyright (c) 2008 - 2015 Renat Nasridinov, <mavladi@gmail.com>
-  
-  Permission is hereby granted, free of charge, to any person obtaining a copy
-  of this software and associated documentation files (the "Software"), to deal
-  in the Software without restriction, including without limitation the rights
-  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  copies of the Software, and to permit persons to whom the Software is
-  furnished to do so, subject to the following conditions:
-  
-  The above copyright notice and this permission notice shall be included in
-  all copies or substantial portions of the Software.
-  
-  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  THE SOFTWARE. 
+The MIT License (MIT)
+Copyright (c) 2008 - 2015 Renat Nasridinov, <mavladi@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE. 
 """
 
 import argparse
@@ -38,66 +38,93 @@ from os.path import isfile, join
 from xml.dom import minidom
 from utils import dbfToList
 
-version = '4.1.5'
+version = '4.1.6'
 
-ArgParser = argparse.ArgumentParser(description='Выборка сумм уплаченных \
-    налогов из файлов ГКС (приказ ГКУ/ГНСУ №74/194 от 25.04.2002)', \
-    epilog='По умолчанию вывод осуществляестя в HTML-файл \
-    bankMMDD.html в каталог, указанный в конфигурационном \
-    файле (см. документацию)')
+ArgParser = argparse.ArgumentParser(description='Выборка сумм уплаченных ' 
+    'налогов из файлов ГКС (приказ ГКУ/ГНСУ №74/194 от 25.04.2002)', 
+    epilog='По умолчанию вывод осуществляестя в HTML-файл bankMMDD.html в ' 
+    'каталог, указанный в конфигурационном файле (см. документацию)')
 
-ArgParser.add_argument('--version', action='version', \
+ArgParser.add_argument('--version', action='version', 
     version='%(prog)s {}'.format(version))
 
-ArgParser.add_argument('-xml', '--xmlfile', help='генерировать XML-файл \
-    обмена данными bankMMDD.xml', action='store_true', default=False, \
+ArgParser.add_argument('-xml', '--xmlfile', help='генерировать XML-файл '
+    'обмена данными bankMMDD.xml', action='store_true', default=False, 
     dest='xmlfile')
 
-ArgParser.add_argument('-d', '--disk', help='создавать файл базы данных: \
-    1 - в памяти, 0 - на диске', action='store', default=1, type=int, \
-    dest='memory')
+#ArgParser.add_argument('-d', '--disk', help='создавать файл базы данных: '
+#    '1 - в памяти, 0 - на диске', action='store', default=1, type=int, 
+#    dest='memory')
 
-ArgParser.add_argument('-nosep', '--noseparator', help='не использовать \
-    разделитель разрядов', action='store_true')
+ArgParser.add_argument('-d', '--disk', help='создавать файл базы данных на '
+    'диске', action='store_true', default=False, dest='disk')
 
-ArgParser.add_argument('-m', '--mark', help='символ, используемый в качестве \
-    разделителя разрядов', action='store', \
-    default=" ", type=str, dest='decimal_mark')
+ArgParser.add_argument('-nosep', '--noseparator', help='не использовать '
+    'разделитель разрядов', action='store_true')
 
-#------------------------Классы обработки ошибок-------------------------------
+ArgParser.add_argument('-m', '--mark', help='символ, используемый в качестве '
+    'разделителя разрядов', action='store', default=" ", type=str, 
+    dest='decimal_mark')
+
+#------------------------Классы обработки ошибок------------------------------
 
 class AutobnkErrors(Exception):
     """ Базовый класс исключений в этом модуле """
     pass
 
 class DirectoryNotFound(AutobnkErrors):
-    """ Исключение, возникающее при отсутствии каталога для входных банковвских 
-    файлов.
+    """ Исключение, возникающее при отсутствии каталога для входных 
+    банковвских файлов.
 
     Атрибуты:
     dir_path- путь, которго нет
     message - сообщение """
     def __init__(self, dir_path):
-        self.message = "Каталог %s не найден и будет создан." % (dir_path)
+        self.message = "Каталог {} не найден и будет создан.".format(dir_path)
+
+
+class CSSFileNotFoundError(AutobnkErrors):
+    """Возникает в случае отсутствия файла стилей `config\bank.min.css`.
+    Агрументы:
+        csspath - путь к конфигурационному файлу, которго нет.
+    """
+    def __init__(self, csspath):
+        self.message = ("ПРЕДУПРЕЖДЕНИЕ: Отсутствует файл каскадных таблиц "
+            "стилей `{}`. Файл HTML отформатирован не будет.".format(csspath))
+
+
+class ConfigFileNotFoundError(FileNotFoundError):
+    """Возникает в случае отсутствия конфигурационных файлов в директории 
+    `config`.
+    Агрументы:
+        configpath - путь к конфигурационному файлу, которго нет
+    """
+    def __init__(self, filename):
+        super().__init__(self, filename)
+        self.filename = filename
+        self.message = ('Конфигурационный файл `{}` не найден.\nПродолжение '
+            'работы невозможно.'.format(self.filename))
+
 
 class WrongSeparatorError(AutobnkErrors):
-    """ Исключение, возникающее если длина разделителя превышает 1 символ или 
+    """Исключение, возникающее если длина разделителя превышает 1 символ или 
     разделитель является цифрой или буквой.
 
     Атрибуты:
     sep - неверный разделитель
     """
     def __init__(self, sep):
-        print("Разделитель `%s` неверный. Будет установлен разделитель по \
-            умолчанию." % (sep))
+        print("Разделитель `{}` неверный. Будет установлен разделитель по "
+            "умолчанию.".format(sep))
 
 class TreasuryFilesNotFound(FileNotFoundError):
     """ Исключение, возникающее при отсутствии казначейских файлов.
     Атрибуты:
-    message - сообщение """
+        message - сообщение """
     def __init__(self):
         FileNotFoundError.__init__(self)
-        self.message = "Отсутствуют казначейские выписки, продолжение работы невозможно.\nДо свидания."
+        self.message = ('Отсутствуют казначейские выписки.\nПродолжение '
+            'работы невозможно.')
 
 
 class DateHandle:
@@ -111,20 +138,22 @@ class DateHandle:
 
     def BankDate(self, datestring):
         """ Получает строку, описывающую месяц и день (MD) в параметре 
-        datestring и возвращает дату в немецком формате, т. е. DD.MM.YYYY """
+        datestring и возвращает дату в немецком формате, т. е. DD.MM.YYYY
+        """
         month = str(int(datestring[0],36)).zfill(2)
         day = str(int(datestring[1], 36)).zfill(2)
         return '.'.join([day, month, str(self.f.tm_year)])
 
     def CurrentDate(self):
-        """ Возвращает текущую дату как строковую переменную 'DD.MM.YYYY' """
+        """ Возвращает текущую дату как строковую переменную 'DD.MM.YYYY'"""
         day, month = str(self.f.tm_mday), str(self.f.tm_mon)
         return '.'.join([day.zfill(2), month.zfill(2), str(self.f.tm_year)])
 
 class Writer:
     """ При вызове этого класса создается его переменная a
     (Writer.a), которая содержит готовый список строк выходной таблицы 
-    Он выгодно отличается уже тем, что суммы уже в гривнах """
+    Он выгодно отличается уже тем, что суммы уже в гривнах
+    """
     def __init__(self, array):
         self.a = []
         for i in array:
@@ -140,8 +169,9 @@ class Writer:
 # класс формирования основной таблицы в спсике списков
 class MakeTables:
     """ Класс создания таблиц
-    При создании переменной класса bank присваивается содержимое кортежа, содержащего
-    суммы по строкам и номер сортировки"""
+    При создании переменной класса bank присваивается содержимое кортежа, 
+    содержащего суммы по строкам и номер сортировки
+    """
     def __init__(self, bank):
         self.summary = GetSummaryData() 
         self.s = self.summary.getroot()
@@ -152,8 +182,8 @@ class MakeTables:
     def MakeSum(self, varname):
         """ Формирует ИТОГОВЫЕ СТРОКИ, которые будут добавлены в 
         таблицу на печать. Номер строки из файла конфигурации сравнивается с 
-        номером строки в итоговой таблице, и в случае совпадения значения этой 
-        строки добавляются в общему итогу.
+        номером строки в итоговой таблице, и в случае совпадения значения 
+        этой строки добавляются в общему итогу.
         Параметры:
             varname - имя переменной из подраздела <sum> раздела <sums> файла 
                 конфигурации summary.xml
@@ -172,8 +202,6 @@ class MakeTables:
                             total = [x+y for x,y in zip(total,l)]
                     total_row.extend(total)
             return total_row
-        # except TypeError:
-        #     print(total,l)
         except:
             raise
 
@@ -197,7 +225,7 @@ class MakeTables:
         for element in z:
             # добавляем строки из таблицы 
             # нумерация с 0, не забываем
-            over_list.append([element[1][1],element[1][2],element[1][3], \
+            over_list.append([element[1][1],element[1][2],element[1][3], 
                 element[1][4]])
             for ins_item in f:
                 # а если номер строки совпдает -- вставляем строку итогов
@@ -207,14 +235,14 @@ class MakeTables:
         return over_list
 
 class DBProcessing:
-    """ При создании экземпляра класса в памяти создается база SQLite3 БД engine
-    и курсор этой БД db_cur
+    """ При создании экземпляра класса в памяти создается база SQLite3 БД 
+    engine и курсор этой БД db_cur
 
     Класс предоставляет методы:
 
     CrossProcess -- возвращает результат запроса сводной таблицу (pivot table)
         из имеющихся таблиц etalon и значений по районам из таблицы itog
-    MakeEtalon -- заполняет таблицу etalon, в которой хранится перечень налогов
+    GetEtalon -- заполняет таблицу etalon, в которой хранится перечень налогов
         и столбцы районов (описаны в файле etalon.xml)
     CreateTables -- создает таблицы: bank, itog_tmp, itog, etalon, принимая в 
         качаестве параметра raj_list коды территорий казначейств из config.xml
@@ -223,21 +251,24 @@ class DBProcessing:
     SQLConstruct(code,params) -- создает строку, содержащую запрос SQL. 
         Принимает параметры:
         code -- код платежа, напимер "110200" из tax.xml
-        params -- список параметров из tax.xml (значения rozd, bd, rd, pg, coef)
+        params -- список параметров из tax.xml (значения rozd,bd,rd,pg,coef)
     ListTables() -- служебный метод, возвращает список таблиц в БД
     RetrieveTable(table_name) -- служебный метод возвращает из БД таблицу с 
             именем table_name в БД
     FillTable(tr_values, raj_code) -- заполняет таблицу bank значениями из 
-            казначейских файлов """ 
+            казначейских файлов
+    """ 
 
-    def __init__(self, memory=1, name=None):
+    def __init__(self, disk=False, name=None):
+        print(name)
         """
         Инициализация класса.
         Принимает параметры:
-            memory - может принимать значения 0 или 1. Укзаывает, создавать файл 
-                базы данных на диске или в памяти. По умолчанию равен 1.
-            name - имя базы даных"""
-        if memory:
+            disk - может принимать значения true|false или 0|1. Укзаывает, создавать 
+                файл базы данных на диске или в памяти. По умолчанию равен False.
+            name - имя базы даных
+        """
+        if not disk:
             # база данных в памяти
             self.engine = sqlite3.connect(':memory:')
         else:
@@ -246,11 +277,11 @@ class DBProcessing:
         self.db_cur = self.engine.cursor()
 
     def CrossProcess(self):
-        self.db_cur.execute("INSERT INTO itog \
-                        SELECT code AS code, raj AS raj, SUM(zn) as zn \
-                        FROM itog_tmp GROUP BY code, raj")
-        self.db_cur.execute("CREATE TABLE bank_sum (code text, raj83 integer, \
-            raj87 integer, raj18 integer)")
+        self.db_cur.execute("""INSERT INTO itog 
+                        SELECT code AS code, raj AS raj, SUM(zn) as zn 
+                        FROM itog_tmp GROUP BY code, raj""")
+        self.db_cur.execute("""CREATE TABLE bank_sum (code text, raj83 
+            integer, raj87 integer, raj18 integer)""")
         self.db_cur.execute("""INSERT INTO bank_sum 
                         SELECT u.code, 
                                 sum(s83.zn) as raj83, 
@@ -267,57 +298,73 @@ class DBProcessing:
                                 itog s18 on u.code = s18.code 
                                 and s18.raj = 18 
                             GROUP BY u.code""")
-        self.db_cur.execute("SELECT e.nompp, e.name, \
-                            s.raj83, s.raj87, s.raj18 \
-                            from etalon e \
-                            left outer join \
-                            bank_sum s \
-                            on e.code = s.code\
-                            ORDER BY nompp")
+        self.db_cur.execute("""SELECT e.nompp, e.name, 
+                            s.raj83, s.raj87, s.raj18 
+                            from etalon e 
+                            left outer join 
+                            bank_sum s 
+                            on e.code = s.code
+                            ORDER BY nompp""")
         return self.db_cur.fetchall()
 
-    def MakeEtalon(self):
+
+    def GetEtalon(self):
         try:
-            etalon_row = ET.parse('config\\etalon.xml')
+            etalon_name = 'etalon.xml'
+            etalon_path = os.path.join('config', etalon_name)
+            if not os.path.isfile(etalon_path):
+                raise ConfigFileNotFoundError(configname)
+        except ConfigFileNotFoundError as e:
+            print(e.message)
+            sys.exit()
+        else:
+            etalon_row = ET.parse(os.path.join(etalon_path))
             table = etalon_row.getroot()
             for row in table:
-                self.db_cur.execute('insert into etalon (code, name, nompp) values \
-                    ("%s","%s", %d)' % (row[0].text, row[1].text, int(row[2].text)))
+                self.db_cur.execute("""INSERT INTO etalon (code, name, nompp) 
+                    VALUES ("{}", "{}", {})""".format(row[0].text, 
+                        row[1].text, int(row[2].text)))
             self.engine.commit()
-        except FileNotFoundError as e:
-            print("Отсутствует конфигурационный файл %s.\nДо свидания." % (e.filename))
-            sys.exit()
             
 
     def CreateTables(self): #, raj_list):
         try:
             # создание таблиц
-            self.db_cur.execute("CREATE TABLE bank (raj integer, rozd text,rd text, \
-                pg text, st text, zn integer, bd integer)")
-            self.db_cur.execute("CREATE TABLE itog_tmp (code text, raj integer,\
-                zn integer)")
-            self.db_cur.execute("CREATE TABLE itog (code text, raj integer, \
-                zn integer)")
-            self.db_cur.execute("CREATE TABLE etalon (code text, name text, nompp \
-                integer)")
+            self.db_cur.execute("""CREATE TABLE bank (raj integer, rozd text,
+                rd text, pg text, st text, zn integer, bd integer)""")
+            self.db_cur.execute("""CREATE TABLE itog_tmp (code text, 
+                raj integer, zn integer)""")
+            self.db_cur.execute("""CREATE TABLE itog (code text, raj integer, 
+                zn integer)""")
+            self.db_cur.execute("""CREATE TABLE etalon (code text, name text, 
+                nompp integer)""")
             self.engine.commit()
         except sqlite3.OperationalError:
             print('Таблица уже существует в базе данных.')
             sys.exit()
 
     def FillTable(self, tr_values, raj_code):
-        # заполнение таблицы
-        for e in tr_values:
-            self.db_cur.execute('insert into bank values \
-                (%s,%s,"%s","%s","%s",%s,%s)' % \
-                (raj_dict[raj_code],e[0],e[1][0],e[1][1],e[1][2],e[2],e[3]))
-        self.engine.commit()
+        try:
+            # заполнение таблицы
+            for e in tr_values:
+                self.db_cur.execute("insert into bank values "
+                    "({},{},'{}','{}','{}',{},{})".format(raj_dict[raj_code], 
+                        e[0], e[1][0], e[1][1], e[1][2], e[2], e[3]))
+            self.engine.commit()
+        except KeyError as e:
+            print('Банковские файлы имеют расширение `{}` вместо расширений '
+                'в виде кодов казначейств.\nПереименуйте файлы и '
+                'перезапустите программу'.format(e.args[0]))
+            sys.exit()
+            raise
+
 
     def ListTables(self):
         # перечисление таблиц
-        self.db_cur.execute("SELECT name FROM sqlite_master WHERE type='table' \
-            ORDER BY name;")
+        self.db_cur.execute("SELECT name FROM sqlite_master WHERE "
+            "type='table' ORDER BY name;")
         print(self.db_cur.fetchall())
+
 
     def RetrieveTable(self, table_name):
         # вывод таблицы по имени
@@ -325,37 +372,59 @@ class DBProcessing:
         self.db_cur.execute("SELECT * FROM "+table_name)
         for element in self.db_cur.fetchall():
             print(element)
-        print('-'*80)
+        print('-'*78)
+
 
     def SQLConstruct(self,code,params):
-        rozd = ('' if params[0]==None else " AND rozd='"+params[0]+"'")
-        bd = params[1] # всегда присутствует
-        rd = params[2] # всегда присутствует
-        pg = ('' if params[3]==None else " AND pg='"+params[3]+"'")
-        coef = params[4] # всегда присутствует
-        query = "SELECT raj, SUM(zn) * %f as 'zn' FROM bank WHERE bd=%s AND \
-            rd='%s' %s %s GROUP BY raj;" % (float(params[4]), params[1], \
-            params[2], pg, rozd)
+        # <raj> <rozd> <bd> <rd> <pg> <coef>
+        #   0      1     2    3    4     5
+        raj = ('' if params[0] == None else " AND raj='"+params[0]+"'")
+        rozd = ('' if params[1] == None else " AND rozd='"+params[1]+"'")
+        bd = params[2] # всегда присутствует
+        rd = params[3] # всегда присутствует
+        pg = ('' if params[4] == None else " AND pg='"+params[4]+"'")
+        coef = params[5] # всегда присутствует
+        query = ("""SELECT raj, 
+                        SUM(zn) * {} as 'zn' 
+                    FROM 
+                        bank 
+                    WHERE 
+                        bd={} AND rd='{}' {} {} {} 
+                    GROUP BY raj;""".format(
+                        float(coef), 
+                        bd, 
+                        rd, 
+                        pg, 
+                        rozd, 
+                        raj))
         self.db_cur.execute(query)
         for e in self.db_cur.fetchall():
             # район, код, сумма
-            self.db_cur.execute("insert into itog_tmp values (%s, %s, %d)" % \
-                (code, e[0], e[1]))
+            self.db_cur.execute("INSERT INTO itog_tmp VALUES "
+                                "('{}', '{}', {})".format(code, e[0], e[1]))
+
 
     def Processing(self):
         try:
-            tax_list = ET.parse('config\\tax.xml')
+            tax_name = 'tax.xml'
+            tax_path = os.path.join('config', tax_name)
+            if not os.path.isfile(tax_path):
+                raise ConfigFileNotFoundError(tax_name)
+        except ConfigFileNotFoundError as e:
+            print(e.message)
+            sys.exit()
+        else:
+            tax_list = ET.parse(os.path.join('config', 'tax.xml'))
             tax = tax_list.getroot()
             for row in tax:
                 for query in row:
                     params = []
-                    # <rozd> <bd> <rd> <pg> <coef>
                     for c in query:
-                        params.append(c if c is None else c.text) 
+                        params.append(c if c is None else c.text)
+                    # SQLConstruct передается код строки и params[], где 
+                    # params[] - список [rozd, bd, rd, pg, ,coef]
                     self.SQLConstruct(row.attrib['code'],params)
-        except FileNotFoundError as e:
-            print("Отсутствует конфигурационный файл %s.\nДо свидания." % (e.filename))
-            sys.exit()
+
 
 class WriteFile():
     """ Получает дату банковских файлов в виде параметра tr_files_date. Дата 
@@ -365,21 +434,27 @@ class WriteFile():
         self.dt=DateHandle()
         self.tr_date = fn
 
-    def GetCSS(self):
+    def GetCSS(self, cssname='bank.min.css'):
         """Открывает минифицированный файл CSS и возвращает его содержимое 
         для вставки в HTML-файл
         """
         try:
-            return open('config\\bank.min.css','r').read().replace('\n', '')
-        except FileNotFoundError:
-            print("ПРЕДУПРЕЖДЕНИЕ: Файл `bank.css` не найден. Таблица будет неотформатирована.")
+            csspath = os.path.join('config',cssname)
+            if os.path.isfile(csspath): 
+                return open(csspath,'r').read() 
+            else:
+                raise CSSFileNotFoundError(csspath)
+        except CSSFileNotFoundError as e:
+            print(e.message)
+
 
     def ComposeFileName(self, extension, temp=False):
         """ Формирование имени выходного файла
-        принимает расширение extension БЕЗ ТОЧКИ и возвращает 'bankMMDD.ext' с 
-        учётом пути сохранения, определенного в config.xml
+        принимает расширение extension БЕЗ ТОЧКИ и возвращает 'bankMMDD.ext' 
+        с учётом пути сохранения, определенного в config.xml
         Параметр temp определяет, вызвана ли функция для возврата временного 
-        имени файла в случае, если файл занят (см. процедуру WriteFile)."""
+        имени файла в случае, если файл занят (см. процедуру WriteFile).
+        """
         if not temp:
             filename = ''.join([
                     'bank',self.dt.BankDate(fn)[3:5], self.dt.BankDate(fn)[:2]
@@ -388,17 +463,22 @@ class WriteFile():
             filename = 'temp'
         return ''.join((out_directory,os.sep,filename,'.', extension))
 
+
     def GetDelimitersPosition(self):
         """ Возвращает словарь из списков (single_ln, double_ln, emph_ln, 
-        italic_ln), содержащих номера строк, после которых применяются эффекты:
-        Список      Эффект                  ключ словаря/класс CSS        
+        italic_ln), содержащих номера строк, после которых применяются 
+        эффекты:
+
+        Список      Эффект                  ключ словаря/класс CSS
         single_ln   одинарная линия         single
         double_ln   полужирный с  рамкой    double
         emph_ln     полужирный              emphasis
         italic_ln   курсив                  italic
-        Эти данные хранятся в переменных раздела <divs> singleline, doubleline, 
-        italic и emphline соответственно файла summary.xml
+
+        Эти данные хранятся в переменных раздела <divs> singleline, 
+        doubleline, italic и emphline соответственно файла summary.xml
         """
+
         def Position(xpath):
             # pos_values - данные из конфига
             return tuple(map(int,pos_values.find(xpath).text.split(',')))
@@ -408,19 +488,23 @@ class WriteFile():
         keys = ['single', 'double', 'emphasis', 'italic']
         # список значений 
         values = map(Position,
-                    ['divs/singleline','divs/doubleline','divs/emphline','divs/italic'])
+                    ['divs/singleline',
+                    'divs/doubleline',
+                    'divs/emphline',
+                    'divs/italic'])
         return dict(zip(keys,values))
 
 
     def MakeHTML(self, rows):
         """ Компонует страницу html.
-        Получает словарь, содержащий номера строк, после которых будут вставлены 
-        разделители либо применено форматирование (функция GetDelimitersPosition) 
-        в переменную insert_rows.
+        Получает словарь, содержащий номера строк, после которых будут 
+        вставлены разделители либо применено форматирование (функция 
+        GetDelimitersPosition) в переменную insert_rows.
         Определяет внутреннюю функцию GetCSSSelector, которая получает номер 
         строки и ищет его в словаре, который возвращает функция 
-        GetDelimitersPosition и возвращает имя селектора CSS, если строке не 
-        сопоставлен стиль, возвращает пустую строку.
+        GetDelimitersPosition и возвращает имя селектора CSS (или имена 
+        нескольких селекторов через пробел), если строке не сопоставлен 
+        стиль, возвращает пустую строку.
         Также содержит функцию Separator - добавляет разделитель разрядов, 
         определенный в переменной decimal_mark в зависимости от значения 
         переменной noseparator. 
@@ -428,7 +512,6 @@ class WriteFile():
         """
 
         insert_rows = self.GetDelimitersPosition()
-
         hrn = lambda x: math.ceil(x/100) if ((x/100)%1)>0.51 \
                 else math.floor(x/100)
 
@@ -439,17 +522,25 @@ class WriteFile():
                 return format(sep_num, ",d").replace(",", decimal_mark)
 
         def GetCSSSelector(row_num, delims=insert_rows):
+            # пустой список для стилей
+            class_items = []
             for k,v in delims.items():
-                if row_num in v:
-                    # return " class='{}'".format(k)
-                    return k
-            return ''
+                # row_num - 1: нумерация с 0
+                # чтобы было согласовано с итогами
+                if row_num - 2 in v:
+                    class_items.append(k)
+            if class_items:
+                return ' '.join(class_items)
+            else:
+                return ''
 
         # считываем содержимое шаблона 
         try:
-            page_template = Template(open('config\\bank.tmpl','r',encoding='utf-8').read())
+            page_template = Template(open(os.path.join('config', 'bank.tmpl'), 
+                'r',encoding='utf-8').read())
         except FileNotFoundError:
-            print("ФАТАЛЬНО: Отсутствуeт шаблон веб-страницы.\nПродолжение работы невозможно.")
+            print("ФАТАЛЬНО: Отсутствуeт шаблон веб-страницы.\nПродолжение "
+                "работы невозможно.")
             sys.exit()
 
         # словарь page_data будет передан в шаблон
@@ -484,7 +575,8 @@ class WriteFile():
                 f.write(content)
             return fn
         except PermissionError:
-            sys.stdout.write("\nФайл занят и будет сохранен под именем 'tmp.html'")
+            sys.stdout.write("\nФайл занят и будет сохранен под именем" 
+                "'tmp.html'")
             fn = self.ComposeFileName('html',temp=True)
             with open(fn, 'w') as f:
                 f.write(content)
@@ -498,8 +590,9 @@ class WriteFile():
         d = DateHandle()
         tr_file_date = ET.SubElement(root, 'bank_date')
         # дата в виде YYYYMMDD
-        tr_file_date.text = self.dt.BankDate(fn)[-4:]+self.dt.BankDate(fn)[3:5]+ \
-            self.dt.BankDate(fn)[:2]
+        tr_file_date.text = (self.dt.BankDate(fn)[-4:] + 
+                            self.dt.BankDate(fn)[3:5] + 
+                            self.dt.BankDate(fn)[:2])
         data = ET.SubElement(root, 'data')
         # вывод таблицы
         for row in rows:
@@ -517,8 +610,12 @@ class WriteFile():
             sumnord = ET.SubElement(line, 'sumnord')
             sumnord.text = str(row[5])
         with open(self.ComposeFileName('xml'),mode='bw') as xml_file:
-            xml_file.write(minidom.parseString(ET.tostring(root)).toprettyxml(indent="\t", \
-                encoding='windows-1251'))
+            xml_file.write(
+                minidom.parseString(
+                    ET.tostring(
+                        root
+                        )
+                    ).toprettyxml(indent="\t", encoding='windows-1251'))
 
 
 def ParseFile(tr_dir, tr_f):
@@ -540,40 +637,53 @@ def ParseFile(tr_dir, tr_f):
 
 def ReadConfig():
     """наполняет кортеж для расширений файлов казны tr_ext кодами территорий 
-    казначейств из config.xml"""
+    казначейств из config.xml
+    """
+    configname = 'config.xml'
+    configpath = os.path.join('config', configname)
     try:
-        if os.path.exists('config\\config.xml'):
-            treasury_conf = ET.parse('config\\config.xml')
-            tr = treasury_conf.getroot()
-            if not os.path.exists(tr[0][1].text):
-                os.makedirs(tr[0][1].text)
-            for tr_code in tr.iter('code'):
-                if 'inverse' in tr_code.attrib:
-                    if tr_code.attrib['inverse'].lower() in ('1','true'):
-                        tr_inv.append(tr_code.text)
-                tr_ext.append(tr_code.text)
-            for item in tr.iter('file'):
-                raj_dict[item[1].text]=item[2].text
-            return tr[0][0].text, tr[0][1].text
-        else:
-            raise ConfigFileNotFoundError
+        if not os.path.isfile(configpath):
+            raise ConfigFileNotFoundError(configname)
     except ConfigFileNotFoundError as e:
         print(e.message)
         sys.exit()
+    else:
+        treasury_conf = ET.parse(configpath)
+        tr = treasury_conf.getroot()
+        if not os.path.exists(tr[0][1].text):
+            os.makedirs(tr[0][1].text)
+        for tr_code in tr.iter('code'):
+            if 'inverse' in tr_code.attrib:
+                if tr_code.attrib['inverse'].lower() in ('1','true'):
+                    tr_inv.append(tr_code.text)
+            tr_ext.append(tr_code.text)
+        for item in tr.iter('file'):
+            raj_dict[item[1].text]=item[2].text
+        return tr[0][0].text, tr[0][1].text
+
+
 
 def GetSummaryData():
-    """Поскольку содержимое файла summary.xml используется в GetDelimitersPosition() и 
-    как переменная класса MakeTables, процедура его чтения определена здесь. """
+    """Поскольку содержимое файла summary.xml используется в функции 
+    GetDelimitersPosition() и как переменная класса MakeTables, процедура его 
+    чтения определена здесь.
+    """
     try:
-        return ET.parse('config\\summary.xml')
-    except FileNotFoundError as e:
-        print("Отсутствует конфигурационный файл %s.\nДо свидания." % (e.filename))
+        summary_filename = 'summary.xml'
+        summary_path = os.path.join('config', summary_filename)
+        if not os.path.isfile(summary_path):
+            raise ConfigFileNotFoundError(summary_filename)
+    except ConfigFileNotFoundError as e:
+        print(e.message)
         sys.exit()
+    else:
+        return ET.parse(summary_path)
+
 
 def Make(bankpath):
-    """ создание таблиц """
+    """Создание таблиц """
     base.CreateTables()
-    """ Создание списка казначейских файлов по списку 
+    """Создание списка казначейских файлов по списку 
     из директории, указанной в конфигурационном файле """
     files = GetFileNames(bankpath=bankpath)
     try:
@@ -595,7 +705,7 @@ def PrintApprove(question, default = 'yes'):
         быть yes, no или None (в последнем случае ждет ответа до победы).
     answer принимает одно из значений "yes" или "no".
     """
-    valid = {"yes":True, "y":True, "n":False, "no":False}
+    valid = {"yes": True, "y": True, "n": False, "no": False}
     if default == None:
         prompt = " [y/n] "
     elif default == "yes":
@@ -603,8 +713,8 @@ def PrintApprove(question, default = 'yes'):
     elif default == "no":
         prompt = " [y/N] "
     else:
-        raise ValueError("Неправильное значение ответа, по умолчанию '%s'" % \
-            default)
+        raise ValueError("Неправильное значение ответа, по умолчанию {}"
+            .format(default))
     while True:
         sys.stdout.write(question + prompt)
         choice = input().lower()
@@ -613,18 +723,19 @@ def PrintApprove(question, default = 'yes'):
         elif choice in valid:
             return valid[choice]
         else:
-            sys.stdout.write("Правльные ответы 'y/yes' или 'n/no'\n")
+            sys.stdout.write("Правильные ответы 'y/yes' или 'n/no'\n")
 
 
 def GetFileNames(bankpath):
-    return [f for f in listdir(bankpath) if isfile(os.path.join(bankpath,f)) \
-        and f[4]=='0' and ((f[3]=='1' and not f[9:] in tr_inv)  \
+    return [f for f in listdir(bankpath) if isfile(os.path.join(bankpath,f)) 
+        and f[4]=='0' and ((f[3]=='1' and not f[9:] in tr_inv)  
         or ((f[2]=='0' or (f[2]=='1' and f[3]=='0')) and f[9:] in tr_inv))]
 
 
 if __name__=="__main__":
     # получаем агрументы командной строки
     results = ArgParser.parse_args()
+    print(results)
     # наличие разделителя и сам разделитель 
     try:
         noseparator = results.noseparator
@@ -636,10 +747,6 @@ if __name__=="__main__":
         decimal_mark = "'"
 
     """ Глобальные списки, константы и прочее """
-    # константа TREASURY_INVERSE определяет код(ы) казначейств(а), для которых 
-    # необходимо условие выборки, согласно которго бюджет имеет признак "сводный"- 0
-    # TREASURY_INVERSE = ('097',)
-
     # константа госбюджет
     DB = 0
     # константа местный бюджет
@@ -654,8 +761,8 @@ if __name__=="__main__":
     raj_dict = {}  # словарь сопоставления казначейств районам
 
     # получаем из конфигурационных файлов пути: 
-    # 	out_directory -- путь для записи файлов
-    # 	bank_directory -- путь к казначейским файлам
+    #   out_directory -- путь для записи файлов
+    #   bank_directory -- путь к казначейским файлам
     bank_directory, out_directory = ReadConfig()
     for dir_ in bank_directory, out_directory:
         try:
@@ -667,36 +774,44 @@ if __name__=="__main__":
             sys.exit()
 
     # подготовка, генерация таблицы в  FillList()
-    if not results.memory:
-        dh = DateHandle()   # экз. класса обработки даты
-        # создание имени файла базы данных - берется дата банка из имени файла
-        # разделяется на ДД, ММ, ГГГГ, переворачивается и создаем имя
-        db_date = dh.BankDate(GetFileNames(paths[0])[0][5:7])
-        h = db_date.split('.')
-        h.reverse()
-        db_name = os.path.join(paths[1], ''.join([ 'bank', ''.join(h), '.db' ]))
-        if os.path.isfile(db_name):
-            os.remove(db_name)
-        base = DBProcessing(memory=results.memory, name=db_name)
-    else:
-        base = DBProcessing()
+    #if not results.disk:
+    dh = DateHandle()   # экз. класса обработки даты
+    # создание имени файла базы данных - берется дата банка из имени файла
+    # разделяется на ДД, ММ, ГГГГ, переворачивается и создаем имя
+    db_date = dh.BankDate(GetFileNames(bank_directory)[0][5:7])
+    h = db_date.split('.')
+    h.reverse()
+    db_name = os.path.join(out_directory, ''.join([ 
+        'bank', 
+        ''.join(h), 
+        '.db' 
+        ]))
+    if os.path.isfile(db_name):
+        os.remove(db_name)
+    base = DBProcessing(disk=results.disk, name=db_name)
+    #else:
+    #    base = DBProcessing()
     # fn - имя файла для получения даты
     fn = Make(bank_directory)[5:7]
     base.Processing()
-    base.MakeEtalon()
+    base.GetEtalon()
 
     q = MakeTables(base.CrossProcess())
     g=Writer(q.FillList())
     # экземпляр WriteFile
     html_wr = WriteFile()
     # делаем html
-    # p -- имя файла с расширением ".html"
-    p = html_wr.WriteFile(html_wr.MakeHTML(g.GetList()))
+    # html_page -- имя файла с расширением ".html"
+    html_page = html_wr.WriteFile(html_wr.MakeHTML(g.GetList()))
+
     
     if PrintApprove("Открыть?"):
-        webbrowser.open(p, new=2, autoraise=True)
-    sys.stdout.write("\nФайл сохранен в '%s'\n" % p)
+        webbrowser.open(html_page, new=2, autoraise=True)
+        sys.stdout.write("\nФайл сохранен в {}\n".format(html_page))
     if results.xmlfile:
         html_wr.WriteXML(g.a)
-        sys.stdout.write("\nФайл XML сохранен в директорию сохранения как {0}.".format(''.join((p.split('.')[0],'xml'))))
+        sys.stdout.write(
+            "\nФайл XML сохранен в директорию сохранения как "
+            "{0}.".format(''.join((html_page.split('.')[0],'xml')))
+            )
     input("\n\nНажмите Enter для выхода.")  
