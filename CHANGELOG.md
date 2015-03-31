@@ -55,6 +55,12 @@
 элемента `<code>` в файле `config.xml`.
 * небольшой рефакторинг.
 
+##### v. 4.1.6 31.03.15
+* рефакторинг обработки исключений
+* код немного стандартизирован по PEP-8
+* добавлена возможность указания отдельных правил выборки для каждого из районов, на случай, если правила отличаются
+* строки форматируются при помощи `format`
+
 [dbftr]: https://github.com/ap-Codkelden/autoBnk/blob/master/utils.py
 [bankcss]: https://github.com/ap-Codkelden/autoBnk/blob/master/config/bank.css
 [jinja]: http://jinja.pocoo.org/
