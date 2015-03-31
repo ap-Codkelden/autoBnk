@@ -2,6 +2,7 @@
 <tax>
 	<row code='140100'>
 		<query>
+			<raj/>
 			<rozd>1</rozd> 
 			<bd>0</bd> 
 			<rd>1401</rd> 
@@ -11,6 +12,23 @@
 	</row>
 	<row code='110200'>
 		<query>
+			<raj/>
+			<rozd>1</rozd> 
+			<bd>0</bd> 
+			<rd>1102</rd> 
+			<pg>01</pg> 
+			<coef>1.00</coef> 
+		</query>
+		<query>
+			<raj/>
+			<rozd>1</rozd> 
+			<bd>0</bd> 
+			<rd>1102</rd> 
+			<pg>31</pg> 
+			<coef>1.00</coef> 
+		</query>
+		<query>
+			<raj/>
 			<rozd>3</rozd> 
 			<bd>0</bd> 
 			<rd>1102</rd> 
@@ -20,13 +38,15 @@
 	</row>
 	<row code='110230'>
 			<query>
-				<rozd>3</rozd> 
+				<raj/>
+				<rozd>1</rozd> 
 				<bd>0</bd> 
 				<rd>1102</rd> 
 				<pg>31</pg> 
-				<coef>0.90</coef> 
+				<coef>1.00</coef> 
 			</query>
 			<query>
+				<raj/>
 				<rozd>3</rozd> 
 				<bd>0</bd> 
 				<rd>1102</rd> 
@@ -34,6 +54,7 @@
 				<coef>0.90</coef> 
 			</query>
 			<query>
+				<raj/>
 				<rozd>3</rozd> 
 				<bd>0</bd> 
 				<rd>1102</rd> 
@@ -41,13 +62,7 @@
 				<coef>0.90</coef> 
 			</query>
 			<query>
-				<rozd>3</rozd> 
-				<bd>0</bd> 
-				<rd>1102</rd> 
-				<pg>45</pg> 
-				<coef>0.90</coef> 
-			</query>
-			<query>
+				<raj/>
 				<rozd>3</rozd> 
 				<bd>0</bd> 
 				<rd>1102</rd> 
@@ -55,6 +70,7 @@
 				<coef>0.90</coef> 
 			</query>
 			<query>
+				<raj/>
 				<rozd>3</rozd> 
 				<bd>0</bd> 
 				<rd>1102</rd> 
@@ -62,6 +78,7 @@
 				<coef>0.90</coef> 
 			</query>
 			<query>
+				<raj/>
 				<rozd>3</rozd> 
 				<bd>0</bd> 
 				<rd>1102</rd> 
@@ -69,6 +86,7 @@
 				<coef>0.90</coef> 
 			</query>
 			<query>
+				<raj/>
 				<rozd>3</rozd> 
 				<bd>0</bd> 
 				<rd>1102</rd> 
@@ -76,6 +94,7 @@
 				<coef>0.90</coef> 
 			</query>
 			<query>
+				<raj/>
 				<rozd>3</rozd> 
 				<bd>0</bd> 
 				<rd>1102</rd> 
@@ -83,6 +102,7 @@
 				<coef>0.90</coef> 
 			</query>
 			<query>
+				<raj/>
 				<rozd>3</rozd> 
 				<bd>0</bd> 
 				<rd>1102</rd> 
@@ -90,6 +110,7 @@
 				<coef>0.90</coef> 
 			</query>
 			<query>
+				<raj/>
 				<rozd>3</rozd> 
 				<bd>0</bd> 
 				<rd>1102</rd> 
@@ -99,6 +120,7 @@
 	</row>
 	<row code='210100'>
 		<query>
+			<raj/>
 			<rozd>1</rozd>
 			<bd>0</bd>
 			<rd>2101</rd>
@@ -108,6 +130,7 @@
 	</row>
 	<row code='130200'>
 		<query>
+			<raj/>
 			<rozd>3</rozd>
 			<bd>0</bd>
 			<rd>1302</rd>
@@ -117,6 +140,7 @@
 	</row>
 	<row code='130300'>
 		<query>
+			<raj/>
 			<rozd>3</rozd>
 			<bd>0</bd>
 			<rd>1303</rd>
@@ -126,6 +150,7 @@
 	</row>
 	<row code='210810'>
 		<query>
+			<raj/>
 			<rozd></rozd>
 			<bd>0</bd>
 			<rd>2108</rd>
@@ -135,6 +160,7 @@
 	</row>
 	<row code='310100'>
 		<query>
+			<raj/>
 			<rozd></rozd>
 			<bd>0</bd>
 			<rd>3101</rd>
@@ -144,6 +170,7 @@
 	</row>
 	<row code='130600'>
 		<query>
+			<raj/>
 			<rozd>1</rozd>
 			<bd>0</bd>
 			<rd>1306</rd>
@@ -153,6 +180,7 @@
 	</row>
 	<row code='140200'>
 		<query>
+			<raj/>
 			<rozd></rozd>
 			<bd>0</bd>
 			<rd>1402</rd>
@@ -162,6 +190,7 @@
 	</row>
 	<row code='240613'>
 		<query>
+			<raj/>
 			<rozd></rozd>
 			<bd>0</bd>
 			<rd>2108</rd>
@@ -169,6 +198,7 @@
 			<coef>1.00</coef>
 		</query>
 		<query>
+			<raj/>
 			<rozd></rozd>
 			<bd>0</bd>
 			<rd>2108</rd>
@@ -176,6 +206,7 @@
 			<coef>1.00</coef>
 		</query>
 		<query>
+			<raj/>
 			<rozd></rozd>
 			<bd>0</bd>
 			<rd>2406</rd>
@@ -183,17 +214,9 @@
 			<coef>1.00</coef>
 		</query>
 	</row>
-	<row code='190600'>
-		<query>
-			<rozd>1</rozd>
-			<bd>0</bd>
-			<rd>1906</rd>
-			<pg></pg>
-			<coef>1.00</coef>
-		</query>
-	</row>
 	<row code='190110'>
 		<query>
+			<raj/>
 			<rozd>3</rozd>
 			<bd>0</bd>
 			<rd>1901</rd>
@@ -204,6 +227,7 @@
 	<row code='110110'>
 		<!-- военный сбор -->
 		<query>
+			<raj/>
 			<rozd>1</rozd>
 			<bd>0</bd>
 			<rd>1101</rd>
@@ -214,16 +238,26 @@
 	<row code='110130'>
 		<!-- НДФЛ -->
 		<query>
+			<raj/>
 			<rozd>3</rozd>
 			<bd>0</bd>
 			<rd>1101</rd>
 			<pg></pg>
 			<coef>0.25</coef>
 		</query>
+		<query>
+			<raj/><!-- НДФЛ в виде % -->
+			<rozd></rozd>
+			<bd>0</bd>
+			<rd>1101</rd>
+			<pg>08</pg>
+			<coef>1.00</coef>
+		</query>
 	</row>
 	<row code='110108'>
-		<!-- НДФЛ в виде % -->
+		<!-- НДФЛ в виде % отдельно-->
 		<query>
+			<raj/>
 			<rozd></rozd>
 			<bd>0</bd>
 			<rd>1101</rd>
@@ -234,6 +268,7 @@
 	<!--  МБ  -->
 	<row code='110100'>
 		<query>
+			<raj/>
 			<rozd>3</rozd> 
 			<bd>0</bd> 
 			<rd>1101</rd> 
@@ -243,6 +278,7 @@
 	</row>
 	<row code='130102'>
 		<query>
+			<raj/>
 			<rozd>1</rozd> 
 			<bd>1</bd> 
 			<rd>1301</rd> 
@@ -253,6 +289,7 @@
 	<row code='180505'>
 		<!-- Фіксований сільськогосподарський податок -->
 		<query>
+			<raj/>
 			<rozd>1</rozd>
 			<bd>1</bd>
 			<rd>1805</rd>
@@ -262,6 +299,7 @@
 	</row>
 	<row code='180105'><!-- зю з -->
 		<query>
+			<raj/>
 			<rozd>4</rozd>
 			<bd>1</bd>
 			<rd>1801</rd>
@@ -271,6 +309,7 @@
 	</row>
 	<row code='180106'><!--зю ор-->
 		<query>
+			<raj/>
 			<rozd>4</rozd>
 			<bd>1</bd>
 			<rd>1801</rd>
@@ -280,6 +319,7 @@
 	</row>
 	<row code='180107'><!--зю ор-->
 		<query>
+			<raj/>
 			<rozd>4</rozd>
 			<bd>1</bd>
 			<rd>1801</rd>
@@ -289,6 +329,7 @@
 	</row>
 	<row code='180109'><!--зю ор-->
 		<query>
+			<raj/>
 			<rozd>4</rozd>
 			<bd>1</bd>
 			<rd>1801</rd>
@@ -296,8 +337,27 @@
 			<coef>1.00</coef>
 		</query>
 	</row>
+	<row code='180110'><!--транспорт-->
+		<query>
+			<raj/>
+			<rozd></rozd>
+			<bd>1</bd>
+			<rd>1801</rd>
+			<pg>10</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<raj/>
+			<rozd></rozd>
+			<bd>1</bd>
+			<rd>1801</rd>
+			<pg>11</pg>
+			<coef>1.00</coef>
+		</query>
+	</row>
 	<row code='110202'>
 		<query>
+			<raj/>
 			<rozd>3</rozd>
 			<bd>0</bd>
 			<rd>1102</rd>
@@ -305,63 +365,35 @@
 			<coef>0.10</coef>
 		</query>
 		<query>
-			<rozd>4</rozd>
+			<raj/>
+			<rozd></rozd>
 			<bd>1</bd>
 			<rd>1102</rd>
-			<pg>32</pg>
-			<coef>1.00</coef>
-		</query>
-		<query>
-			<rozd>4</rozd>
-			<bd>1</bd>
-			<rd>1102</rd>
-			<pg>02</pg>
-			<coef>1.00</coef>
-		</query>
-	</row>
-
-	<row code='110239'>
-		<query>
-			<rozd>4</rozd>
-			<bd>1</bd>
-			<rd>1102</rd>
-			<pg>32</pg>
-			<coef>1.00</coef>
-		</query>
-		<query>
-			<rozd>4</rozd>
-			<bd>1</bd>
-			<rd>1102</rd>
-			<pg>02</pg>
-			<coef>1.00</coef>
-		</query>
-	</row>
-	<row code='180400'>
-		<query>
-			<rozd>1</rozd>
-			<bd>1</bd>
-			<rd>1804</rd>
 			<pg></pg>
 			<coef>1.00</coef>
 		</query>
+	</row>
+	<row code='110239'>
 		<query>
+			<raj/>
 			<rozd>4</rozd>
 			<bd>1</bd>
-			<rd>1804</rd>
-			<pg>15</pg>
+			<rd>1102</rd>
+			<pg>32</pg>
 			<coef>1.00</coef>
 		</query>
 		<query>
-			<!--0418-->
-			<rozd>2</rozd>
+			<raj/>
+			<rozd>4</rozd>
 			<bd>1</bd>
-			<rd>1804</rd>
-			<pg>15</pg>
+			<rd>1102</rd>
+			<pg>02</pg>
 			<coef>1.00</coef>
 		</query>
 	</row>
 	<row code='130299'>
 		<query>
+			<raj/>
 			<rozd>3</rozd>
 			<bd>0</bd>
 			<rd>1302</rd>
@@ -371,6 +403,7 @@
 	</row>
 	<row code='130399'>
 		<query>
+			<raj/>
 			<rozd>3</rozd>
 			<bd>0</bd>
 			<rd>1303</rd>
@@ -380,6 +413,7 @@
 	</row>
 	<row code='140400'>
 		<query>
+			<raj/>
 			<rozd></rozd>
 			<bd>1</bd>
 			<rd>1404</rd>
@@ -389,10 +423,19 @@
 	</row>
 	<row code='220100'>
 		<query>
+			<raj/>
 			<rozd>4</rozd>
 			<bd>1</bd>
 			<rd>2201</rd>
 			<pg>11</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<raj/>
+			<rozd></rozd>
+			<bd>1</bd>
+			<rd>2201</rd>
+			<pg>09</pg>
 			<coef>1.00</coef>
 		</query>
 	</row>
@@ -400,6 +443,7 @@
 	<!-- Криворожский район -->
 	<row code='180501'>
 		<query>
+			<raj/>
 			<rozd>5</rozd>
 			<bd>1</bd>
 			<rd>1805</rd>
@@ -407,6 +451,7 @@
 			<coef>0.43</coef>
 		</query>
 		<query>
+			<raj/>
 			<rozd>4</rozd>
 			<bd>1</bd>
 			<rd>1805</rd>
@@ -414,6 +459,7 @@
 			<coef>1.00</coef>
 		</query>
 		<query>
+			<raj/>
 			<rozd>1</rozd>
 			<bd>1</bd>
 			<rd>1805</rd>
@@ -423,6 +469,7 @@
 	</row>
 	<row code='180502'>
 		<query>
+			<raj/>
 			<rozd>5</rozd>
 			<bd>1</bd>
 			<rd>1805</rd>
@@ -430,6 +477,7 @@
 			<coef>0.43</coef>
 		</query>
 		<query>
+			<raj/>
 			<rozd>1</rozd>
 			<bd>1</bd>
 			<rd>1805</rd>
@@ -437,6 +485,7 @@
 			<coef>1.00</coef>
 		</query>
 		<query>
+			<raj/>
 			<rozd>4</rozd>
 			<bd>1</bd>
 			<rd>1805</rd>
@@ -446,36 +495,49 @@
 	</row>
 	<row code='180100'>
 		<query>
-			<rozd></rozd>
+			<raj>18</raj>
+			<rozd>1</rozd>
 			<bd>1</bd>
 			<rd>1801</rd>
 			<pg>01</pg>
 			<coef>1.00</coef>
 		</query>
 		<query>
-			<rozd></rozd>
-			<bd>1</bd>
-			<rd>1801</rd>
-			<pg>02</pg>
-			<coef>1.00</coef>
-		</query>
-		<query>
-			<rozd></rozd>
-			<bd>1</bd>
-			<rd>1801</rd>
-			<pg>03</pg>
-			<coef>1.00</coef>
-		</query>
-		<query>
-			<rozd></rozd>
+			<raj>83</raj>
+			<rozd>1</rozd>
 			<bd>1</bd>
 			<rd>1801</rd>
 			<pg>04</pg>
 			<coef>1.00</coef>
 		</query>
+		<query>
+			<raj>87</raj>
+			<rozd>1</rozd>
+			<bd>1</bd>
+			<rd>1801</rd>
+			<pg>04</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<raj>83</raj>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1801</rd>
+			<pg>01</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<raj>87</raj>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1801</rd>
+			<pg>01</pg>
+			<coef>1.00</coef>
+		</query>
 	</row>
 	<row code="310199">
 		<query>
+			<raj/>
 			<rozd/> 
 			<bd>1</bd> 
 			<rd>3101</rd> 
@@ -485,6 +547,7 @@
 	</row>
 	<row code="190199">
 		<query>
+			<raj/>
 			<rozd>3</rozd> 
 			<bd>0</bd> 
 			<rd>1901</rd> 
@@ -495,6 +558,15 @@
 	<!-- ІНШІ МІСЦЕВІ -->
 	<row code='240600'>
 		<query>
+			<raj/><!-- бывший виноград -->
+			<rozd>1</rozd>
+			<bd>0</bd>
+			<rd>1906</rd>
+			<pg></pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<raj/>
 			<rozd></rozd>
 			<bd>1</bd>
 			<rd>2101</rd>
@@ -502,6 +574,7 @@
 			<coef>1.00</coef>
 		</query>
 		<query>
+			<raj/>
 			<rozd></rozd>
 			<bd>1</bd>
 			<rd>2108</rd>
@@ -509,6 +582,7 @@
 			<coef>1.00</coef>
 		</query>
 		<query>
+			<raj/>
 			<rozd></rozd>
 			<bd>1</bd>
 			<rd>2108</rd>
@@ -516,6 +590,7 @@
 			<coef>1.00</coef>
 		</query>
 		<query>
+			<raj/>
 			<rozd></rozd>
 			<bd>1</bd>
 			<rd>2108</rd>
@@ -523,6 +598,7 @@
 			<coef>1.00</coef>
 		</query>
 		<query>
+			<raj/>
 			<rozd></rozd>
 			<bd>1</bd>
 			<rd>2406</rd>
@@ -530,11 +606,37 @@
 			<coef>1.00</coef>
 		</query>
 		<query>
+			<raj/>
 			<rozd></rozd>
 			<bd>1</bd>
 			<rd>1601</rd>
 			<pg></pg>
 			<coef>1.00</coef>
 		</query>
+		<query>
+			<raj/><!-- начало бывших патентов -->
+			<rozd>1</rozd>
+			<bd>1</bd>
+			<rd>1804</rd>
+			<pg></pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<raj/>
+			<rozd>4</rozd>
+			<bd>1</bd>
+			<rd>1804</rd>
+			<pg>15</pg>
+			<coef>1.00</coef>
+		</query>
+		<query>
+			<!--0418-->
+			<raj/>
+			<rozd>2</rozd>
+			<bd>1</bd>
+			<rd>1804</rd>
+			<pg>15</pg>
+			<coef>1.00</coef>
+		</query><!-- конец бывших патентов -->
 	</row>
 </tax>
