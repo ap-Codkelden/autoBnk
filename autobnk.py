@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 import argparse
 from jinja2 import Template
-import math
+import decimal
 import sqlite3
 import sys
 import xml.etree.ElementTree as ET
@@ -38,7 +38,7 @@ from os.path import isfile, join
 from xml.dom import minidom
 from utils import dbfToList
 
-version = '4.1.6'
+version = '4.1.7'
 
 ArgParser = argparse.ArgumentParser(description='Выборка сумм уплаченных ' 
     'налогов из файлов ГКС (приказ ГКУ/ГНСУ №74/194 от 25.04.2002)', 
@@ -512,14 +512,18 @@ class WriteFile():
         """
 
         insert_rows = self.GetDelimitersPosition()
-        hrn = lambda x: math.ceil(x/100) if ((x/100)%1)>0.51 \
-                else math.floor(x/100)
+
+        decimal.getcontext().rounding=decimal.ROUND_05UP
+
+        def hrn(x):
+            x = decimal.Decimal(x/100)
+            return decimal.Decimal(x.quantize(decimal.Decimal('0')))
 
         def Separator(sep_num, noseparator=noseparator):
             if noseparator:
                 return str(sep_num)
             else:
-                return format(sep_num, ",d").replace(",", decimal_mark)
+                return format(int(sep_num), ",d").replace(",", decimal_mark)
 
         def GetCSSSelector(row_num, delims=insert_rows):
             # пустой список для стилей
