@@ -1,5 +1,13 @@
+##### v. 4.2.0 08.05.15
+* изменен формат файлов конфигурации с XML на [YAML][yaml]
+* изменены правила округления `ROUND_05UP` на `ROUND_HALF_EVEN`
+* столбцы, в которых отображаются суммы по нескольким районам, теперь 
+рассчитываются в самом шаблоне
+* рефакторинг кода 
+
 ##### v. 4.1.7 02.04.15
-* при округлении вместо `math` теперь используется `decimal`.
+* при округлении вместо `math` теперь используется `decimal` и правило 
+`ROUND_05UP`.
 
 ##### v. 4.1.6 31.03.15
 * рефакторинг обработки исключений
@@ -63,3 +71,4 @@
 [dbftr]: https://github.com/ap-Codkelden/autoBnk/blob/master/utils.py
 [bankcss]: https://github.com/ap-Codkelden/autoBnk/blob/master/config/bank.css
 [jinja]: http://jinja.pocoo.org/
+[yaml]: http://yaml.org/

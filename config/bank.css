@@ -1,44 +1,44 @@
 body {
-	font-family: helvetica,monospace;
-	font-size: 12pt;
-	padding-left: 6em; 
+    font-family: helvetica,monospace;
+    font-size: 12pt;
+    padding-left: 1cm; 
 }
 
 .double td {
- 	border: 2px solid #000000;
- 	font-weight: bolder;
+    border: 2px solid #000000;
+    font-weight: bolder;
  }
 
 .single td {
-	border-bottom: 1px solid #000000;
+    border-bottom: 1px solid #000000;
 }
 
 .emphasis td {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .italic td {
-	font-style: italic;
+    font-style: italic;
 }
 
 .dt {
- 	font-weight: bolder;
+    font-weight: bolder;
 }
 
 table {
-	font-family: inherit;
-	font-size: 12pt;
-	border: 2px solid black;
-	border-collapse: collapse;
-	width:100%;
+    font-family: inherit;
+    font-size: 12pt;
+    border: 2px solid black;
+    border-collapse: collapse;
+    width:100%;
 }
 
  td {
- 	text-align: right;
+    text-align: right;
  }
 
  td.names {
- 	text-align: left;
+    text-align: left;
  }
 
 td { 
@@ -51,3 +51,22 @@ th {
     border: 1px solid black; 
     padding: 5px 1px;
    }
+
+/*
+    Footer
+*/
+
+table#footer {
+    margin-top: 1.5ex;
+    border: 0;
+    font-style: italic;
+    font-size: 90%;
+    }
+
+table#footer tr, table#footer td, table#footer th {
+    border: 0;
+    }
+
+table#footer td:first-child {
+    text-align: left;
+    }

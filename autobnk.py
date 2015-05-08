@@ -25,12 +25,12 @@ THE SOFTWARE.
 """
 
 import argparse
-from jinja2 import Template
+from jinja2 import Template, Environment, PackageLoader
 import decimal
 import sqlite3
 import sys
-import xml.etree.ElementTree as ET
 import webbrowser
+import yaml
 from datetime import date
 import os.path
 from os import listdir
@@ -38,7 +38,7 @@ from os.path import isfile, join
 from xml.dom import minidom
 from utils import dbfToList
 
-version = '4.1.7'
+version = '4.2.0'
 
 ArgParser = argparse.ArgumentParser(description='Выборка сумм уплаченных ' 
     'налогов из файлов ГКС (приказ ГКУ/ГНСУ №74/194 от 25.04.2002)', 
@@ -51,10 +51,6 @@ ArgParser.add_argument('--version', action='version',
 ArgParser.add_argument('-xml', '--xmlfile', help='генерировать XML-файл '
     'обмена данными bankMMDD.xml', action='store_true', default=False, 
     dest='xmlfile')
-
-#ArgParser.add_argument('-d', '--disk', help='создавать файл базы данных: '
-#    '1 - в памяти, 0 - на диске', action='store', default=1, type=int, 
-#    dest='memory')
 
 ArgParser.add_argument('-d', '--disk', help='создавать файл базы данных на '
     'диске', action='store_true', default=False, dest='disk')
@@ -82,6 +78,10 @@ class DirectoryNotFound(AutobnkErrors):
     def __init__(self, dir_path):
         self.message = "Каталог {} не найден и будет создан.".format(dir_path)
 
+class UnknownError(AutobnkErrors):
+    """ Исключение, возникающее при всяких прочих ошибках."""
+    def __init__(self):
+        self.message = "Неизвестная ошибка."
 
 class CSSFileNotFoundError(AutobnkErrors):
     """Возникает в случае отсутствия файла стилей `config\bank.min.css`.
@@ -117,6 +117,7 @@ class WrongSeparatorError(AutobnkErrors):
         print("Разделитель `{}` неверный. Будет установлен разделитель по "
             "умолчанию.".format(sep))
 
+
 class TreasuryFilesNotFound(FileNotFoundError):
     """ Исключение, возникающее при отсутствии казначейских файлов.
     Атрибуты:
@@ -136,6 +137,7 @@ class DateHandle:
         self.f = date.today().timetuple()
         # self.year = self.f.tm_year
 
+
     def BankDate(self, datestring):
         """ Получает строку, описывающую месяц и день (MD) в параметре 
         datestring и возвращает дату в немецком формате, т. е. DD.MM.YYYY
@@ -144,24 +146,20 @@ class DateHandle:
         day = str(int(datestring[1], 36)).zfill(2)
         return '.'.join([day, month, str(self.f.tm_year)])
 
+
     def CurrentDate(self):
-        """ Возвращает текущую дату как строковую переменную 'DD.MM.YYYY'"""
+        """Возвращает текущую дату как строковую переменную 'DD.MM.YYYY'"""
         day, month = str(self.f.tm_mday), str(self.f.tm_mon)
         return '.'.join([day.zfill(2), month.zfill(2), str(self.f.tm_year)])
 
+
 class Writer:
-    """ При вызове этого класса создается его переменная a
+    """При вызове этого класса создается его переменная `a`
     (Writer.a), которая содержит готовый список строк выходной таблицы 
-    Он выгодно отличается уже тем, что суммы уже в гривнах
+    Он выгодно отличается уже тем, что суммы уже в гривнах.
     """
     def __init__(self, array):
-        self.a = []
-        for i in array:
-            # ai -- append_item
-            ai1 = 0 if i[1] == None else i[1]
-            ai2 = 0 if i[2] == None else i[2]
-            ai3 = 0 if i[3] == None else i[3]
-            self.a.append([i[0],ai1,ai2,ai1+ai2,ai3,ai1+ai2+ai3])
+        self.a = array
 
     def GetList(self):
         return self.a
@@ -173,28 +171,28 @@ class MakeTables:
     содержащего суммы по строкам и номер сортировки
     """
     def __init__(self, bank):
-        self.summary = GetSummaryData() 
-        self.s = self.summary.getroot()
+        self.summary = summary_conf
         # Здесь self.bank - кортеж, уже содержащий отобранные запросами 
         # суммы по строкам, 
         self.bank=bank
 
+
     def MakeSum(self, varname):
-        """ Формирует ИТОГОВЫЕ СТРОКИ, которые будут добавлены в 
+        """Формирует ИТОГОВЫЕ СТРОКИ, которые будут добавлены в 
         таблицу на печать. Номер строки из файла конфигурации сравнивается с 
         номером строки в итоговой таблице, и в случае совпадения значения 
         этой строки добавляются в общему итогу.
         Параметры:
-            varname - имя переменной из подраздела <sum> раздела <sums> файла 
-                конфигурации summary.xml
+            varname - имя переменной из раздела `sums` файла конфигурации 
+            summary.yaml
         """
         try:
             s18 = s83 = s87 = 0 # начальные нулевые значения
             total = [s18,s83,s87,]
-            for d in self.s.iter('sum'):
-                if d[0].text==varname:
-                    total_row = [d[2].text] # начало строки итогов
-                    numb3rs = [int(f) for f in d[1].text.split(',')]
+            for d in self.summary['sums']:
+                if d['varname'] == varname:
+                    total_row = [d['desc']] # начало строки итогов
+                    numb3rs = d['lines']
                     for i in self.bank:
                         if i[0] in numb3rs:
                             # замена None => 0
@@ -217,8 +215,6 @@ class MakeTables:
         """
         # сюда запишем результат
         over_list = []
-        # находим раздел конфига inserts 
-        f = self.summary.find('inserts')
         # z - нумеруем список, УЖЕ СОДЕРЖАЩИЙ ИТОГИ
         # для проверки номеров строк
         z = enumerate(self.bank)
@@ -227,10 +223,10 @@ class MakeTables:
             # нумерация с 0, не забываем
             over_list.append([element[1][1],element[1][2],element[1][3], 
                 element[1][4]])
-            for ins_item in f:
+            for ins_item in self.summary['insert']:
                 # а если номер строки совпдает -- вставляем строку итогов
-                if element[0] == int(ins_item[0].text):
-                    over_list.append(self.MakeSum(ins_item[1].text))
+                if element[0] == ins_item['line']:
+                    over_list.append(self.MakeSum(ins_item['varname']))
         # over_list - просто готовый список списков, но без итоговых столбцов
         return over_list
 
@@ -242,16 +238,18 @@ class DBProcessing:
 
     CrossProcess -- возвращает результат запроса сводной таблицу (pivot table)
         из имеющихся таблиц etalon и значений по районам из таблицы itog
-    GetEtalon -- заполняет таблицу etalon, в которой хранится перечень налогов
-        и столбцы районов (описаны в файле etalon.xml)
+    GetEtalon -- заполняет таблицы etalon и footer, в которых хранятся 
+        перечни налогов и столбцы районов (описаны в файле etalon.yaml)
     CreateTables -- создает таблицы: bank, itog_tmp, itog, etalon, принимая в 
-        качаестве параметра raj_list коды территорий казначейств из config.xml
-    Processing -- парсит конфиг условий выборки tax.xml и затем для каждого 
-    условия вызывает SQLConstruct(code,params) с соответствущими атрибутами
-    SQLConstruct(code,params) -- создает строку, содержащую запрос SQL. 
-        Принимает параметры:
-        code -- код платежа, напимер "110200" из tax.xml
-        params -- список параметров из tax.xml (значения rozd,bd,rd,pg,coef)
+        качаестве параметра raj_list коды территорий казначейств из 
+        config.yaml
+    FooterCrossProcess -- функция полностью аналогична CrossProcess, но 
+        возвращает данные для таблицы внизу страницы. Также определяет функцию 
+        GetCodes, которая возвращает строку, содержщую коды для вставки 
+        в запрос кодов. 
+    Processing -- парсит конфиг условий выборки tax.yaml и затем для каждого 
+    условия вызывает SQL-запрос с соответствущими параметрам, и записывает 
+    результат запроса в БД.  
     ListTables() -- служебный метод, возвращает список таблиц в БД
     RetrieveTable(table_name) -- служебный метод возвращает из БД таблицу с 
             именем table_name в БД
@@ -260,12 +258,12 @@ class DBProcessing:
     """ 
 
     def __init__(self, disk=False, name=None):
-        print(name)
         """
         Инициализация класса.
         Принимает параметры:
-            disk - может принимать значения true|false или 0|1. Укзаывает, создавать 
-                файл базы данных на диске или в памяти. По умолчанию равен False.
+            disk - может принимать значения true|false или 0|1. Укзаывает, 
+                создавать файл базы данных на диске или в памяти. По 
+                умолчанию равен False.
             name - имя базы даных
         """
         if not disk:
@@ -280,10 +278,8 @@ class DBProcessing:
         self.db_cur.execute("""INSERT INTO itog 
                         SELECT code AS code, raj AS raj, SUM(zn) as zn 
                         FROM itog_tmp GROUP BY code, raj""")
-        self.db_cur.execute("""CREATE TABLE bank_sum (code text, raj83 
-            integer, raj87 integer, raj18 integer)""")
-        self.db_cur.execute("""INSERT INTO bank_sum 
-                        SELECT u.code, 
+        self.db_cur.execute("""CREATE TABLE bank_sum AS 
+                        SELECT u.code as code, 
                                 sum(s83.zn) as raj83, 
                                 sum(s87.zn) as raj87, 
                                 sum(s18.zn) as raj18 
@@ -298,33 +294,81 @@ class DBProcessing:
                                 itog s18 on u.code = s18.code 
                                 and s18.raj = 18 
                             GROUP BY u.code""")
-        self.db_cur.execute("""SELECT e.nompp, e.name, 
-                            s.raj83, s.raj87, s.raj18 
-                            from etalon e 
+        self.db_cur.execute("""SELECT 
+                                    e.nompp, 
+                                    e.name,
+                                    IFNULL(s.raj83,0), 
+                                    IFNULL(s.raj87,0), 
+                                    IFNULL(s.raj18,0) 
+                                FROM 
+                                    etalon e 
+                                LEFT OUTER JOIN 
+                                    bank_sum s 
+                                ON 
+                                    e.code = s.code
+                                ORDER BY 
+                                    nompp""")
+        return self.db_cur.fetchall()
+
+    def FooterCrossProcess(self):
+        def GetCodes(footer=etalon['footer']):
+            list_codes = []
+            for f in footer:
+                list_codes.append(f['code'])
+            return ','.join([str(x) for x in list_codes])
+
+        query = ("CREATE TABLE footer_itog AS "
+                "SELECT code AS code, raj AS raj, SUM(zn) as zn "
+                "FROM itog_tmp WHERE code IN({})"
+                "GROUP BY code, raj".format(GetCodes()))
+        self.db_cur.execute(query)
+        self.db_cur.execute("""CREATE TABLE footer_sum AS 
+                        SELECT u.code as code, 
+                                sum(s83.zn) as raj83, 
+                                sum(s87.zn) as raj87, 
+                                sum(s18.zn) as raj18 
+                        FROM footer u 
                             left outer join 
-                            bank_sum s 
-                            on e.code = s.code
-                            ORDER BY nompp""")
+                                footer_itog s83 on u.code = s83.code 
+                                and s83.raj = 83 
+                            left outer join 
+                                footer_itog s87 on u.code = s87.code 
+                                and s87.raj = 87 
+                            left outer join 
+                                footer_itog s18 on u.code = s18.code 
+                                and s18.raj = 18 
+                            GROUP BY u.code""")
+        self.db_cur.execute("""SELECT 
+                                    e.nompp, 
+                                    e.name,
+                                    IFNULL(s.raj83,0), 
+                                    IFNULL(s.raj87,0), 
+                                    IFNULL(s.raj18,0) 
+                                FROM 
+                                    footer e 
+                                LEFT OUTER JOIN 
+                                    footer_sum s 
+                                ON 
+                                    e.code = s.code
+                                ORDER BY 
+                                    nompp""")
         return self.db_cur.fetchall()
 
 
     def GetEtalon(self):
-        try:
-            etalon_name = 'etalon.xml'
-            etalon_path = os.path.join('config', etalon_name)
-            if not os.path.isfile(etalon_path):
-                raise ConfigFileNotFoundError(configname)
-        except ConfigFileNotFoundError as e:
-            print(e.message)
-            sys.exit()
-        else:
-            etalon_row = ET.parse(os.path.join(etalon_path))
-            table = etalon_row.getroot()
-            for row in table:
-                self.db_cur.execute("""INSERT INTO etalon (code, name, nompp) 
-                    VALUES ("{}", "{}", {})""".format(row[0].text, 
-                        row[1].text, int(row[2].text)))
-            self.engine.commit()
+        for row in etalon['etalons']:
+            self.db_cur.execute("""INSERT INTO etalon (code, name, nompp) """
+                        """VALUES ("{}", "{}", {})""".format(
+                            row['code'], 
+                            row['name'], 
+                            row['row']))
+        for row in etalon['footer']:
+            self.db_cur.execute("""INSERT INTO footer (code, name, nompp) """
+                        """VALUES ("{}", "{}", {})""".format(
+                            row['code'], 
+                            row['name'], 
+                            row['row']))
+        self.engine.commit()
             
 
     def CreateTables(self): #, raj_list):
@@ -338,10 +382,13 @@ class DBProcessing:
                 zn integer)""")
             self.db_cur.execute("""CREATE TABLE etalon (code text, name text, 
                 nompp integer)""")
+            self.db_cur.execute("""CREATE TABLE footer (code text, name text, 
+                nompp integer)""")
             self.engine.commit()
         except sqlite3.OperationalError:
             print('Таблица уже существует в базе данных.')
             sys.exit()
+
 
     def FillTable(self, tr_values, raj_code):
         try:
@@ -375,56 +422,50 @@ class DBProcessing:
         print('-'*78)
 
 
-    def SQLConstruct(self,code,params):
-        # <raj> <rozd> <bd> <rd> <pg> <coef>
-        #   0      1     2    3    4     5
-        raj = ('' if params[0] == None else " AND raj='"+params[0]+"'")
-        rozd = ('' if params[1] == None else " AND rozd='"+params[1]+"'")
-        bd = params[2] # всегда присутствует
-        rd = params[3] # всегда присутствует
-        pg = ('' if params[4] == None else " AND pg='"+params[4]+"'")
-        coef = params[5] # всегда присутствует
-        query = ("""SELECT raj, 
-                        SUM(zn) * {} as 'zn' 
-                    FROM 
-                        bank 
-                    WHERE 
-                        bd={} AND rd='{}' {} {} {} 
-                    GROUP BY raj;""".format(
-                        float(coef), 
-                        bd, 
-                        rd, 
-                        pg, 
-                        rozd, 
-                        raj))
-        self.db_cur.execute(query)
-        for e in self.db_cur.fetchall():
-            # район, код, сумма
-            self.db_cur.execute("INSERT INTO itog_tmp VALUES "
-                                "('{}', '{}', {})".format(code, e[0], e[1]))
-
-
     def Processing(self):
         try:
-            tax_name = 'tax.xml'
-            tax_path = os.path.join('config', tax_name)
-            if not os.path.isfile(tax_path):
-                raise ConfigFileNotFoundError(tax_name)
+            tax = ReadYAMLConf('tax.yaml')
         except ConfigFileNotFoundError as e:
-            print(e.message)
+            raise
             sys.exit()
         else:
-            tax_list = ET.parse(os.path.join('config', 'tax.xml'))
-            tax = tax_list.getroot()
-            for row in tax:
-                for query in row:
-                    params = []
-                    for c in query:
-                        params.append(c if c is None else c.text)
-                    # SQLConstruct передается код строки и params[], где 
-                    # params[] - список [rozd, bd, rd, pg, ,coef]
-                    self.SQLConstruct(row.attrib['code'],params)
-
+            for row in tax['tax']:
+                code = row['_code']
+                for query in row['row']:
+                    raj = '' if not 'raj' in query['query'] \
+                        else " AND raj='{}'".format(query['query']['raj'])
+                    rozd = '' if not 'rozd' in query['query'] \
+                        else " AND rozd='{}'".format(query['query']['rozd'])
+                    bd = query['query']['bd']
+                    rd = query['query']['rd']
+                    pg = '' if not 'pg' in query['query'] \
+                        else " AND pg='{}'".format(query['query']['pg'])
+                    st = '' if not 'st' in query['query'] \
+                        else " AND st='{}'".format(query['query']['st'])
+                    coef = 1.00 if not 'coef' in query['query'] \
+                        else query['query']['coef']
+                    try:
+                        query = """SELECT raj, 
+                                      SUM(zn) * {0} as 'zn' 
+                                   FROM 
+                                      bank 
+                                   WHERE 
+                                      bd={1} AND rd='{2}' {3} {4} {5} {6} 
+                                   GROUP BY raj;""".format(
+                                      float(coef), #0
+                                      bd, #1
+                                      rd, #2
+                                      pg, #3
+                                      rozd, #4
+                                      st, #5
+                                      raj)  #6
+                        self.db_cur.execute(query)
+                        for e in self.db_cur.fetchall():
+                            # район, код, сумма
+                            self.db_cur.execute("INSERT INTO itog_tmp VALUES "
+                                "('{}', '{}', {})".format(code, e[0], e[1]))
+                    except:
+                        raise 
 
 class WriteFile():
     """ Получает дату банковских файлов в виде параметра tr_files_date. Дата 
@@ -451,7 +492,7 @@ class WriteFile():
     def ComposeFileName(self, extension, temp=False):
         """ Формирование имени выходного файла
         принимает расширение extension БЕЗ ТОЧКИ и возвращает 'bankMMDD.ext' 
-        с учётом пути сохранения, определенного в config.xml
+        с учётом пути сохранения, определенного в config.yaml
         Параметр temp определяет, вызвана ли функция для возврата временного 
         имени файла в случае, если файл занят (см. процедуру WriteFile).
         """
@@ -476,27 +517,16 @@ class WriteFile():
         italic_ln   курсив                  italic
 
         Эти данные хранятся в переменных раздела <divs> singleline, 
-        doubleline, italic и emphline соответственно файла summary.xml
+        doubleline, italic и emphline соответственно файла summary.yaml
         """
 
-        def Position(xpath):
-            # pos_values - данные из конфига
-            return tuple(map(int,pos_values.find(xpath).text.split(',')))
-
-        pos_values = GetSummaryData()
-        # список ключей
-        keys = ['single', 'double', 'emphasis', 'italic']
-        # список значений 
-        values = map(Position,
-                    ['divs/singleline',
-                    'divs/doubleline',
-                    'divs/emphline',
-                    'divs/italic'])
+        position_values = summary_conf['divs']
+        keys, values = position_values.keys(), position_values.values()
         return dict(zip(keys,values))
 
 
     def MakeHTML(self, rows):
-        """ Компонует страницу html.
+        """Компонует страницу html.
         Получает словарь, содержащий номера строк, после которых будут 
         вставлены разделители либо применено форматирование (функция 
         GetDelimitersPosition) в переменную insert_rows.
@@ -513,17 +543,17 @@ class WriteFile():
 
         insert_rows = self.GetDelimitersPosition()
 
-        decimal.getcontext().rounding=decimal.ROUND_05UP
+        # устанавливаем правила округления
+        decimal.getcontext().rounding=decimal.ROUND_HALF_EVEN
 
-        def hrn(x):
-            x = decimal.Decimal(x/100)
-            return decimal.Decimal(x.quantize(decimal.Decimal('0')))
 
-        def Separator(sep_num, noseparator=noseparator):
+        def DoSeparate(sep_num, noseparator=noseparator):
+            sep_num = decimal.Decimal(sep_num/100).quantize(decimal.Decimal('0'))
             if noseparator:
                 return str(sep_num)
             else:
                 return format(int(sep_num), ",d").replace(",", decimal_mark)
+
 
         def GetCSSSelector(row_num, delims=insert_rows):
             # пустой список для стилей
@@ -540,8 +570,9 @@ class WriteFile():
 
         # считываем содержимое шаблона 
         try:
-            page_template = Template(open(os.path.join('config', 'bank.tmpl'), 
-                'r',encoding='utf-8').read())
+            environment = Environment(loader=PackageLoader('autobnk', 'config'))
+            environment.filters['separator'] = DoSeparate
+            page_template = environment.get_template('bank.tmpl')
         except FileNotFoundError:
             print("ФАТАЛЬНО: Отсутствуeт шаблон веб-страницы.\nПродолжение "
                 "работы невозможно.")
@@ -561,14 +592,13 @@ class WriteFile():
         for row in [(x[0]+1, x[1]) for x in enumerate(rows)]:
             r = [GetCSSSelector(row[0])] # получим CSS 
             name = [row[1][0]]          # название налога
-            # к готовой строке добавляются уже округленные
-            # суммы налогов, к которым применен раделитель
+            # к готовой строке добавляются суммы налогов
             r.extend(name)
-            r.extend(list(map(Separator, map(hrn, row[1][1:]))))
+            r.extend(row[1][1:])
             # Формируется строка таблицы в разметке HTML
             table_rows.append(r)
         page_data['rows'] = table_rows
-
+        page_data['footer'] = base.FooterCrossProcess()
         return page_template.render(page_data=page_data)
 
 
@@ -590,6 +620,7 @@ class WriteFile():
 
     def WriteXML(self, rows):
         """ Просто сохранение строк в XML-файл """
+        import xml.etree.ElementTree as ET
         root = ET.Element('bank')
         d = DateHandle()
         tr_file_date = ET.SubElement(root, 'bank_date')
@@ -608,17 +639,11 @@ class WriteFile():
             raj87 = ET.SubElement(line, 'raj87')
             raj87.text = str(row[2])
             raj18 = ET.SubElement(line, 'raj18')
-            raj18.text = str(row[4])
-            sum83 = ET.SubElement(line, 'sum83')
-            sum83.text = str(row[3])
-            sumnord = ET.SubElement(line, 'sumnord')
-            sumnord.text = str(row[5])
+            raj18.text = str(row[3])
         with open(self.ComposeFileName('xml'),mode='bw') as xml_file:
             xml_file.write(
                 minidom.parseString(
-                    ET.tostring(
-                        root
-                        )
+                    ET.tostring(root)
                     ).toprettyxml(indent="\t", encoding='windows-1251'))
 
 
@@ -640,48 +665,25 @@ def ParseFile(tr_dir, tr_f):
 
 
 def ReadConfig():
-    """наполняет кортеж для расширений файлов казны tr_ext кодами территорий 
-    казначейств из config.xml
+    """Парсит файл конфигурации `config.yaml` и проводит следующие операции:
+        - Наполняет кортеж для расширений файлов казны tr_ext кодами 
+        территорий казначейств
+        - Создает нужные папки, если их нет.
     """
-    configname = 'config.xml'
-    configpath = os.path.join('config', configname)
+    config = ReadYAMLConf('config.yaml')
     try:
-        if not os.path.isfile(configpath):
-            raise ConfigFileNotFoundError(configname)
-    except ConfigFileNotFoundError as e:
-        print(e.message)
-        sys.exit()
-    else:
-        treasury_conf = ET.parse(configpath)
-        tr = treasury_conf.getroot()
-        if not os.path.exists(tr[0][1].text):
-            os.makedirs(tr[0][1].text)
-        for tr_code in tr.iter('code'):
-            if 'inverse' in tr_code.attrib:
-                if tr_code.attrib['inverse'].lower() in ('1','true'):
-                    tr_inv.append(tr_code.text)
-            tr_ext.append(tr_code.text)
-        for item in tr.iter('file'):
-            raj_dict[item[1].text]=item[2].text
-        return tr[0][0].text, tr[0][1].text
-
-
-
-def GetSummaryData():
-    """Поскольку содержимое файла summary.xml используется в функции 
-    GetDelimitersPosition() и как переменная класса MakeTables, процедура его 
-    чтения определена здесь.
-    """
-    try:
-        summary_filename = 'summary.xml'
-        summary_path = os.path.join('config', summary_filename)
-        if not os.path.isfile(summary_path):
-            raise ConfigFileNotFoundError(summary_filename)
-    except ConfigFileNotFoundError as e:
-        print(e.message)
-        sys.exit()
-    else:
-        return ET.parse(summary_path)
+        out_dir = config['config']['path']['path-out']
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
+        for f in config['config']['treasury_files']:
+            if 'inverse' in f:
+                tr_inv.append(f['file']['code'])
+            tr_ext.append(f['file']['code'])
+            raj_dict[f['file']['code']] = f['file']['raj']
+        return config['config']['path']['path-bank'], \
+               config['config']['path']['path-out']
+    except:
+        raise
 
 
 def Make(bankpath):
@@ -696,7 +698,6 @@ def Make(bankpath):
     except TreasuryFilesNotFound as e:
         print(e.message)
         sys.exit()
-    #print(files)
     for i in files:
         ParseFile(bankpath, i)
     # вернем 1е имя файла для получения даты
@@ -731,15 +732,33 @@ def PrintApprove(question, default = 'yes'):
 
 
 def GetFileNames(bankpath):
+    """Возвращает массив, содержащий имена казначейских файлов."""
     return [f for f in listdir(bankpath) if isfile(os.path.join(bankpath,f)) 
         and f[4]=='0' and ((f[3]=='1' and not f[9:] in tr_inv)  
         or ((f[2]=='0' or (f[2]=='1' and f[3]=='0')) and f[9:] in tr_inv))]
 
 
+def ReadYAMLConf(configname):
+    """Читет файл конфигурации, имя которого передано в параметре `configname` 
+    и возвращает его в сериализованном виде.
+    """
+    configpath = lambda p: os.path.join('config', p)
+    try: 
+        if not os.path.isfile(configpath(configname)):
+            raise ConfigFileNotFoundError(configname)
+    except ConfigFileNotFoundError as e:
+        print(e.message)
+        sys.exit()
+    except:
+        raise
+    else:
+        with open(configpath(configname), encoding="utf-8") as cf_yaml:
+            return yaml.load(cf_yaml)
+
+
 if __name__=="__main__":
     # получаем агрументы командной строки
     results = ArgParser.parse_args()
-    print(results)
     # наличие разделителя и сам разделитель 
     try:
         noseparator = results.noseparator
@@ -760,10 +779,13 @@ if __name__=="__main__":
     # и для кодов казначейств, для которых необходимо условие выборки, 
     # согласно которго бюджет имеет признак "сводный" - 0
     tr_ext = []
-    tr_inv = []    
+    tr_inv = []
+    raj_dict = {} # словарь сопоставления казначейств районам
 
-    raj_dict = {}  # словарь сопоставления казначейств районам
-
+    # Чтение из файлов конфигурации config/*.yaml  
+    # в соответствующие переменные для глоабльного использования
+    summary_conf = ReadYAMLConf('summary.yaml')
+    etalon = ReadYAMLConf('etalon.yaml')
     # получаем из конфигурационных файлов пути: 
     #   out_directory -- путь для записи файлов
     #   bank_directory -- путь к казначейским файлам
@@ -793,22 +815,22 @@ if __name__=="__main__":
     if os.path.isfile(db_name):
         os.remove(db_name)
     base = DBProcessing(disk=results.disk, name=db_name)
-    #else:
-    #    base = DBProcessing()
     # fn - имя файла для получения даты
     fn = Make(bank_directory)[5:7]
     base.Processing()
     base.GetEtalon()
-
+    # основная таблица + таблица внизу
     q = MakeTables(base.CrossProcess())
+    #base.FooterCrossProcess()
     g=Writer(q.FillList())
     # экземпляр WriteFile
+
     html_wr = WriteFile()
     # делаем html
     # html_page -- имя файла с расширением ".html"
     html_page = html_wr.WriteFile(html_wr.MakeHTML(g.GetList()))
 
-    
+
     if PrintApprove("Открыть?"):
         webbrowser.open(html_page, new=2, autoraise=True)
         sys.stdout.write("\nФайл сохранен в {}\n".format(html_page))
@@ -818,4 +840,4 @@ if __name__=="__main__":
             "\nФайл XML сохранен в директорию сохранения как "
             "{0}.".format(''.join((html_page.split('.')[0],'xml')))
             )
-    input("\n\nНажмите Enter для выхода.")  
+    input("\n\nНажмите Enter для выхода.")

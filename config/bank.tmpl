@@ -5,17 +5,42 @@
 <title></title>
 </head>
 <body>
+{# 
+    В шаблоне используется фильтр separator, 
+    функция которого определена в функции MakeHTML 
+    в autobnk.py
+#}
 <p>Поточна дата: <span class='dt'>{{page_data.cur_date}}</span><br>
 Дата банку: <span class='dt'>{{page_data.bank_date}}</span></p>
 <table>
 <tr>
 <th>Податок</th><th>Жовтн</th><th>Терн</th><th>Півн</th><th>Кр. р/н</th><th>ВСЬОГО</th>
 </tr>
-{% for row in page_data.rows %}
+{% for row in page_data.rows -%}
 <tr{% if row[0] %} class="{{row[0]}}"{% endif %}>
 <td class='names'>{{row[1]}}</td>
-{% for j in row[2:] %}<td>{{j}}</td>{% endfor %}</tr>
-{% endfor %}
+<td>{{row[2]|separator}}</td>
+<td>{{row[3]|separator}}</td>
+<td>{{(row[2] + row[3])|separator}}</td>
+<td>{{row[4]|separator}}</td>
+<td>{{(row[2]+row[3]+row[4])|separator}}</td>
+</tr>
+{% endfor -%}
+</table>
+<table id="footer">
+<tr>
+<th>Податок</th><th>Жовтн</th><th>Терн</th><th>Півн</th><th>Кр. р/н</th><th>ВСЬОГО</th>
+</tr>
+{% for row in page_data.footer %}
+<tr>
+<td>{{row[1]}}</td>
+<td>{{row[2]|separator}}</td>
+<td>{{row[3]|separator}}</td>
+<td>{{(row[2] + row[3])|separator}}</td>
+<td>{{row[4]|separator}}</td>
+<td>{{(row[2]+row[3]+row[4])|separator}}</td>
+</tr>
+{% endfor%}
 </table>
 </body>
 </html>

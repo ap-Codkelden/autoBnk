@@ -1,55 +1,63 @@
 <html>
 <head>
-    <title>Описание файла config.xml</title>
+    <title>Описание файла config.yaml</title>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="autobnk.css">
 </head>
 <body>
 
-<h2>4. Описание файла config.xml</h2>
+<h2>4. Описание файла config.yaml</h2>
 
-<p>Представляет собой файл формата XML с корневым элементом <code>&lt;config&gt;</code>, 
-содержащим содержат дочерние элементы <code>&lt;path&gt;</code> и 
-<code>&lt;treasury_files&gt;</code>.</p>
+<p>Представляет собой файл формата YAML с корневым элементом <code>config</code>, 
+содержащим дочерние элементы <code>path</code> и <code>treasury_files</code>.</p>
 
-<h3>4.1. Элемент &lt;path&gt;</h3>
+<h3>4.1. Элемент path</h3>
 
-<p>В дочерних элементах <code>&lt;path-bank&gt;</code> и <code>&lt;path-out&gt;</code> 
-содержит информацию о каталогах:</p>
+<p>В дочерних элементах <code>path-bank</code> и <code>path-out</code> содержит 
+информацию о каталогах:</p>
 
 <ul>
-    <li><code>&lt;path-bank&gt;</code>&nbsp;&mdash; в который пользователем 
+    <li><code>path-bank</code>&nbsp;&mdash; в который пользователем 
         помещаются казначейские файлы;</li>
-    <li><code>&lt;path-out&gt;</code>&nbsp;&mdash; в который сохраняется 
+    <li><code>path-out</code>&nbsp;&mdash; в который сохраняется 
         выходной HTML-файл;</li>
 </ul>
 
-<pre>&lt;path&gt;
-    &lt;path-bank&gt;d:\Autobnk\in&lt;/path-bank&gt;
-    &lt;path-out&gt;d:\Autobnk\out&lt;/path-out&gt;
-&lt;/path&gt;</pre>
+<p>Следует помнить, что специальные символы внутри двойных кавычек должны быть 
+экранированы, поэтому при использовании двойных кавычек <code>"</code> 
+бэкслэш <code>\</code> в значениях параметров <code>path-bank</code> и 
+<code>path-out</code> должен быть экранирован.</p>
+<p>При использовании одинарных кавычек <code>'</code> экранирование не нужно.</p>
 
-<h3>4.2. Элемент &lt;treasury_files&gt;</h3>
+<pre>path:
+  path-bank: "d:\\Autobnk\\in"
+  path-out: 'd:\Autobnk\out'</pre>
 
-<p>Во множестве дочерних элементов <code>&lt;file&gt;</code> содержит информацию об органах государственной казначейской службы.</p>
+<h3>4.2. Элемент treasury_files</h3>
 
-<p>Каждый элемент <code>&lt;file&gt;</code> содержит следующие дочерние элементы:</p>
+<p>Во множестве дочерних элементов <code>file</code> содержит информацию об органах государственной казначейской службы, файлы которых будут обрабатываться.</p>
+
+<p>Каждый элемент <code>file</code> содержит следующие обязательные дочерние элементы:</p>
 
 <p><ul>
-<li><code>&lt;treasury&gt;</code>&nbsp;&ndash; наименование органа государственной 
-казначейской службы. Используется только для его визуальной идентификции, поэтому 
-может отличаться от официального наименования;</li>
-<li><code>&lt;code&gt;</code>&nbsp;&ndash; код органа государствееной 
+<li><code>code</code>&nbsp;&ndash; код органа государствееной 
 казначейской службы;</li>
-<li><code>&lt;raj&gt;</code>&nbsp;&ndash; код района инспекции.</li>
+<li><code>raj</code>&nbsp;&ndash; код района инспекции.</li>
 </ul></p>
 
-<p><pre>&lt;treasury_files&gt;
-    &lt;file&gt;
-        &lt;treasury&gt;УДКСУ у Криворізькому районі&lt;/treasury&gt;
-        &lt;code&gt;097&lt;/code&gt;
-        &lt;raj&gt;18&lt;/raj&gt;
-    &lt;/file&gt;
-&lt;/treasury_files&gt;</pre></p>
+<p>В элементе <code>file</code> может содержаться также необязательный 
+дочерний элемент <code>inverse</code>, принимающий значение 
+<code>true</code>.</p>
+<p>Наличие данного элемента необходимо для кодов казначейств, которым 
+необходимо условие выборки, согласно которго бюджет имеет признак 
+&laquo;сводный&raquo; - <code>0</code>.</p>
+<p>Если применение такого условия выборки не нужно, элемент <code>inverse</code> 
+не указывается.</p>
+
+<p><pre>- file:
+  # УДКСУ у Криворізькому районі
+  code: "097"
+  raj: 18
+  inverse: true</pre></p>
 
 </body></html>
