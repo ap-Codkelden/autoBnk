@@ -28,9 +28,11 @@
 {% endfor -%}
 </table>
 <table id="footer">
-<tr>
+
+{#<!-- <tr>
 <th>Податок</th><th>Жовтн</th><th>Терн</th><th>Півн</th><th>Кр. р/н</th><th>ВСЬОГО</th>
-</tr>
+</tr> -->#}
+
 {% for row in page_data.footer %}
 <tr>
 <td>{{row[1]}}</td>
@@ -42,5 +44,8 @@
 </tr>
 {% endfor%}
 </table>
+{% if page_data.esv is defined %}
+<p class="esv">ЄСВ за день: {{page_data.esv|separator}}</p>
+{% endif %}
 </body>
 </html>
