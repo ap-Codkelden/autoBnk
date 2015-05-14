@@ -8,6 +8,12 @@ Copyright (c) 2013 - 2015 Renat Nasridinov, <mavladi@gmail.com>
 Модуль вспомогательных утилит для autobnk.py
 Распространяется на тех же условиях, что и autobnk.py
 """
+import zipfile
+import os.path
+from os import remove
+import tempfile
+
+ESVZIP = 'ev.83'
 
 class dbfToList:
     """Класс считывания таблицы из файла DBF в список. 
@@ -74,3 +80,44 @@ class dbfToList:
             rowlist.append([g[11:12],[g[15:23][:4],g[15:23][4:6], \
                 g[15:23][6:8]], int(g[23:40]), self.dbf.split('\\')[-1][2]])
         return rowlist
+
+#
+# Расчёт суммы ЕСВ за день
+#
+
+b2i = lambda x: int.from_bytes(x,byteorder='little')
+
+def ExtractESV(file_name, tr_ext):
+    if zipfile.is_zipfile(file_name):
+        extracted_files = []
+        with zipfile.ZipFile(file_name) as zf:
+            tmp_dir = os.path.join(tempfile.gettempdir())
+            for e in [z for z in zf.namelist() if z[-3:] in tr_ext]:
+                extracted_files.append(os.path.join(tmp_dir,e))
+                zf.extract(e, path=tmp_dir)
+        sum_esv = 0
+        for f in extracted_files:
+            sum_esv+=CalculateESV(f)
+        return sum_esv
+    else:
+        print("Архив с файлами ЕСВ не найден, расчет не произведен.")
+        return None
+
+
+def CalculateESV(esvflie):
+    s = 0
+    DWORD = 4
+    WORD = 2
+    with open(esvflie, 'rb') as dfile:
+        dfile.seek(0x4)
+        rec_count = b2i(dfile.read(DWORD))
+        dfile.seek(0xA)
+        rec_length = b2i(dfile.read(WORD))
+        dfile.seek(226)
+        for n in range(rec_count):
+            s+=int(dfile.read(rec_length)[63:79])
+    try:
+        os.remove(esvflie)
+    except:
+        print("Ошибка удаления файла {}.".format(esvflie))
+    return s
