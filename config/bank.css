@@ -60,7 +60,7 @@ table#footer {
     margin-top: 1.5ex;
     border: 0;
     font-style: italic;
-    font-size: 90%;
+    font-size: small;
     }
 
 table#footer tr, table#footer td, table#footer th {
@@ -70,3 +70,7 @@ table#footer tr, table#footer td, table#footer th {
 table#footer td:first-child {
     text-align: left;
     }
+
+.esv {
+    font-size: small;
+}

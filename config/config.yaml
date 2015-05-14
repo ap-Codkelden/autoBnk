@@ -1,0 +1,18 @@
+config:
+  path:
+    path-bank: 'd:\Autobnk\in'
+    path-out: 'd:\Autobnk\out'
+  treasury_files:
+    - file:
+        # УДКСУ у Криворізькому районі
+        code: "097"
+        raj: 18
+      inverse: true
+    - file:
+        # УДКСУ у Жовтневому районі
+        code: "022"
+        raj: 83
+    - file:
+        # УДКСУ у Тернівському районі
+        code: "025"
+        raj: 87
