@@ -36,9 +36,10 @@ import os.path
 from os import listdir
 from os.path import isfile, join
 from xml.dom import minidom
-from utils import dbfToList
+from utils import dbfToList, ESVZIP, ExtractESV, CalculateESV
 
-version = '4.2.0'
+
+version = '4.2.1'
 
 ArgParser = argparse.ArgumentParser(description='Выборка сумм уплаченных ' 
     'налогов из файлов ГКС (приказ ГКУ/ГНСУ №74/194 от 25.04.2002)', 
@@ -84,7 +85,7 @@ class UnknownError(AutobnkErrors):
         self.message = "Неизвестная ошибка."
 
 class CSSFileNotFoundError(AutobnkErrors):
-    """Возникает в случае отсутствия файла стилей `config\bank.min.css`.
+    """Возникает в случае отсутствия файла стилей `config\bank.css`.
     Агрументы:
         csspath - путь к конфигурационному файлу, которго нет.
     """
@@ -475,7 +476,7 @@ class WriteFile():
         self.dt=DateHandle()
         self.tr_date = fn
 
-    def GetCSS(self, cssname='bank.min.css'):
+    def GetCSS(self, cssname='bank.css'):
         """Открывает минифицированный файл CSS и возвращает его содержимое 
         для вставки в HTML-файл
         """
@@ -525,7 +526,7 @@ class WriteFile():
         return dict(zip(keys,values))
 
 
-    def MakeHTML(self, rows):
+    def MakeHTML(self, rows, esv=None):
         """Компонует страницу html.
         Получает словарь, содержащий номера строк, после которых будут 
         вставлены разделители либо применено форматирование (функция 
@@ -599,6 +600,8 @@ class WriteFile():
             table_rows.append(r)
         page_data['rows'] = table_rows
         page_data['footer'] = base.FooterCrossProcess()
+        if esv:
+            page_data['esv'] = esv
         return page_template.render(page_data=page_data)
 
 
@@ -815,6 +818,11 @@ if __name__=="__main__":
     if os.path.isfile(db_name):
         os.remove(db_name)
     base = DBProcessing(disk=results.disk, name=db_name)
+    # попытка посчиать ЕСВ
+    esv = ExtractESV(os.path.join(bank_directory,ESVZIP), tr_ext)
+    #if esv:
+    #    esv = decimal.Decimal(esv/100).quantize(decimal.Decimal('0'))
+    #    print(esv)
     # fn - имя файла для получения даты
     fn = Make(bank_directory)[5:7]
     base.Processing()
@@ -824,12 +832,10 @@ if __name__=="__main__":
     #base.FooterCrossProcess()
     g=Writer(q.FillList())
     # экземпляр WriteFile
-
     html_wr = WriteFile()
     # делаем html
     # html_page -- имя файла с расширением ".html"
-    html_page = html_wr.WriteFile(html_wr.MakeHTML(g.GetList()))
-
+    html_page = html_wr.WriteFile(html_wr.MakeHTML(g.GetList(),esv=esv))
 
     if PrintApprove("Открыть?"):
         webbrowser.open(html_page, new=2, autoraise=True)
