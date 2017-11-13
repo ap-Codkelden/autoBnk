@@ -1,3 +1,9 @@
+**WARNING!**
+
+This repository is no longer supported and remains here only for explorational and historical purposes.
+
+Feel free to fork and use according to license conditions.
+
 AutoBnk
 =======
 
