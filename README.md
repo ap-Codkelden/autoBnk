@@ -1,11 +1,11 @@
+AutoBnk (Auto Bank)
+===================
+
 **WARNING!**
 
-This repository is no longer supported and remains here only for explorational and historical purposes.
+This project is no longer supported and remains here only for explorational and historical purposes.
 
 Feel free to fork and use according to license conditions.
-
-AutoBnk
-=======
 
 Скрипт для выборки сумм налогов, сборов, прочих обязательных платежей, 
 контролируемых ГФС Украины, из файлов ГКС (приказ ГКУ/ГНСУ [№74/194 від 25.04.2002](http://zakon4.rada.gov.ua/laws/show/z0436-02))
